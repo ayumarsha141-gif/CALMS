@@ -6,7 +6,7 @@ CALMS (Career Adaptive Learning Management System)
 ---
 
 # 📖 Short Description
-CALMS adalah platform ekosistem digital adaptif yang dirancang untuk membantu mahasiswa Informatika Universitas Mataram dalam mempersiapkan karir sejak semester awal hingga memasuki dunia kerja. Sistem ini berfungsi sebagai “GPS Karir Adaptif” yang menyediakan roadmap pembelajaran personal, analisis skill gap, simulasi peluang lolos rekrutmen menggunakan metode Monte Carlo, rekomendasi Laboratorium Tugas Akhir, serta insight tren industri berbasis data real-time seperti LinkedIn dan portal lowongan kerja. :contentReference[oaicite:0]{index=0}
+CALMS adalah platform ekosistem digital adaptif yang dirancang untuk membantu mahasiswa Informatika Universitas Mataram dalam mempersiapkan karir sejak semester awal hingga memasuki dunia kerja. Sistem ini berfungsi sebagai “GPS Karir Adaptif” yang menyediakan roadmap pembelajaran personal, analisis skill gap, simulasi peluang lolos rekrutmen menggunakan metode Monte Carlo, rekomendasi Laboratorium Tugas Akhir, serta insight tren industri berbasis data real-time seperti LinkedIn dan portal lowongan kerja.
 
 ---
 
@@ -257,4 +257,4 @@ if(!$conn){
 ---
 
 # 🎯 Project Goals
-CALMS bertujuan untuk membantu mahasiswa Informatika Universitas Mataram mengurangi kebingungan roadmap karir, meningkatkan kesiapan kerja, mengurangi skill gap dengan industri, serta menyediakan sistem monitoring karir berbasis data dan simulasi adaptif. :contentReference[oaicite:1]{index=1}
+CALMS bertujuan untuk membantu mahasiswa Informatika Universitas Mataram mengurangi kebingungan roadmap karir, meningkatkan kesiapan kerja, mengurangi skill gap dengan industri, serta menyediakan sistem monitoring karir berbasis data dan simulasi adaptif.
