@@ -1,7 +1,7 @@
 <?php
 session_start();
-require_once '../includes/auth_guard.php';
-require_once '../config/database.php';
+require_once 'includes/auth_guard.php';
+require_once 'config/database.php';
 
 requireRole('mahasiswa');
 $user = getCurrentUser();
@@ -40,11 +40,11 @@ $stmt->execute([$user['id']]);
 $simulation = $stmt->fetch();
 
 $stmt = $db->prepare("
-    SELECT c.cert_name, c.provider, c.level, sc.status
+    SELECT sc.cert_name, sc.provider, sc.tier, sc.score, sc.status
     FROM student_certifications sc
-    JOIN certifications c ON c.id = sc.cert_id
     JOIN mahasiswa_profiles mp ON mp.id = sc.student_id
     WHERE mp.user_id = ? AND sc.status = 'recommended'
+    ORDER BY sc.tier ASC, sc.score DESC
     LIMIT 3
 ");
 $stmt->execute([$user['id']]);
@@ -364,6 +364,7 @@ $offset = $circumference - ($readinessScore / 100) * $circumference;
     </div>
 </main>
 
+<script src="main.js"></script>
 <script>
 const toggle  = document.getElementById('sidebarToggle');
 const sidebar = document.getElementById('sidebar');
@@ -372,7 +373,6 @@ toggle?.addEventListener('click', () => sidebar.classList.toggle('open'));
 document.querySelectorAll('[data-width]').forEach(el => {
     el.style.width = el.dataset.width + '%';
 });
-<script src="main.js"></script>
 </script>
 
 </body>
