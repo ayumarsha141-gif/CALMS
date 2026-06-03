@@ -22,9 +22,9 @@ $nav = [
     </div>
 
     <div class="sidebar-user">
-        <div class="user-avatar"><?= strtoupper(substr($user['fullname'], 0, 2)) ?></div>
+        <div class="user-avatar"><?= strtoupper(substr($user['fullname'] ?? 'U', 0, 2)) ?></div>
         <div class="user-info">
-            <strong><?= htmlspecialchars(explode(' ', $user['fullname'])[0]) ?></strong>
+            <strong><?= htmlspecialchars(explode(' ', $user['fullname'] ?? 'User')[0]) ?></strong>
             <span><?= htmlspecialchars($profile['nim'] ?? '-') ?></span>
         </div>
     </div>
