@@ -15,7 +15,7 @@ $profile = $stmt->fetch();
 $errors  = [];
 $success = '';
  
-// ── SAVE SKILLS (POST) ──
+// SAVE SKILLS (POST)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_skills']) && $profile) {
     $levels = $_POST['skill_level'] ?? [];
     foreach ($levels as $skillId => $level) {
@@ -37,10 +37,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_skills']) && $pr
     $success = 'Skill berhasil disimpan!';
 }
  
-// ── FETCH ALL SKILLS ──
+// FETCH ALL SKILLS
 $allSkills = $db->query("SELECT * FROM skills ORDER BY category, skill_name")->fetchAll();
  
-// ── FETCH STUDENT SKILLS ──
+// FETCH STUDENT SKILLS
 $studentSkillMap = [];
 if ($profile) {
     $stmt = $db->prepare("SELECT skill_id, student_level FROM student_skills WHERE student_id = ?");
@@ -50,14 +50,14 @@ if ($profile) {
     }
 }
  
-// ── GROUP BY CATEGORY ──
+// GROUP BY CATEGORY 
 $grouped = [];
 foreach ($allSkills as $sk) {
     $grouped[$sk['category']][] = $sk;
 }
 $categories = array_keys($grouped);
  
-// ── COMPUTE STATS ──
+// COMPUTE STATS
 $totalSkillsOwned = count($studentSkillMap);
 $totalGapPoints   = 0;
 $highGapCount     = 0;
@@ -75,7 +75,7 @@ foreach ($allSkills as $sk) {
 }
 $avgReadiness = count($readinessList) > 0 ? round(array_sum($readinessList) / count($readinessList)) : 0;
  
-// ── HELPERS ──
+// HELPERS
 function gapLabel(int $gap): string {
     if ($gap <= 1) return 'Rendah';
     if ($gap <= 3) return 'Sedang';
@@ -109,7 +109,7 @@ $activePage = 'skill_gap';
     <link rel="stylesheet" href="dashboard.css">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        /* ── Skill Gap page styles ── */
+        /* Skill Gap page styles */
         .sg-layout {
             display: grid;
             grid-template-columns: 1fr 300px;
