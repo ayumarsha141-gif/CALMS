@@ -162,7 +162,7 @@ $offset = $circumference - ($readinessScore / 100) * $circumference;
             <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             Profil
         </a>
-        <a href="../logout.php" class="nav-logout">
+        <a href="logout.php" class="nav-logout">
             <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
             Keluar
         </a>
@@ -349,7 +349,8 @@ $offset = $circumference - ($readinessScore / 100) * $circumference;
                         <div class="cert-rank rank-<?= $i+1 ?>"><?= $i+1 ?></div>
                         <div class="cert-info">
                             <strong><?= htmlspecialchars($cert['cert_name']) ?></strong>
-                            <span><?= htmlspecialchars($cert['provider']) ?> · <?= ucfirst($cert['level']) ?></span>
+                            <?php $tierLabel = $cert['tier'] == 1 ? 'Internasional' : ($cert['tier'] == 2 ? 'BNSP' : 'Kursus'); ?>
+                            <span><?= htmlspecialchars($cert['provider']) ?> · Tier <?= $cert['tier'] ?> — <?= $tierLabel ?></span>
                         </div>
                     </div>
                     <?php endforeach; ?>
