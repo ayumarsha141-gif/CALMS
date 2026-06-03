@@ -4,9 +4,9 @@ require_once 'config/database.php';
 
 if (isset($_SESSION['user_id'])) {
     $role = $_SESSION['role'];
-    if ($role === 'admin') header('Location: admin/dashboard.php');
-    elseif ($role === 'dosen') header('Location: dosen/dashboard.php');
-    else header('Location: mahasiswa/dashboard.php');
+    if ($role === 'admin') header('Location: dashboard.php');
+    elseif ($role === 'dosen') header('Location: dashboard.php');
+    else header('Location: dashboard.php');
     exit;
 }
 
@@ -33,9 +33,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['role']     = $user['role'];
             session_regenerate_id(true);
 
-            if ($user['role'] === 'admin') header('Location: admin/dashboard.php');
-            elseif ($user['role'] === 'dosen') header('Location: dosen/dashboard.php');
-            else header('Location: mahasiswa/dashboard.php');
+            if ($user['role'] === 'admin') header('Location: dashboard.php');
+            elseif ($user['role'] === 'dosen') header('Location: dashboard.php');
+            else header('Location: dashboard.php');
             exit;
         } else {
             $error = 'Email atau password salah.';
