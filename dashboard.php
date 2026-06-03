@@ -47,6 +47,7 @@ $stmt = $db->prepare("
     ORDER BY sc.tier ASC, sc.score DESC
     LIMIT 3
 ");
+    
 $stmt->execute([$user['id']]);
 $certs = $stmt->fetchAll();
 
