@@ -36,12 +36,6 @@ function requireRole(string ...$roles): void {
     }
 }
 
-function getBaseUrl(): string {
-    $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-    $host     = $_SERVER['HTTP_HOST'];
-    return $protocol . '://' . $host;
-}
-
 function getCurrentUser(): array {
     return [
         'id'       => $_SESSION['user_id']  ?? null,
