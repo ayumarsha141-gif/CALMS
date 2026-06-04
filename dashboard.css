@@ -1,21 +1,9 @@
-/* ============================================
-   CALMS — Dashboard Stylesheet
-   File: assets/css/dashboard.css
-   Khusus untuk halaman dashboard semua role
-   ============================================ */
-
-/* ============================================
-   LAYOUT
-   ============================================ */
 .dashboard-body {
     display: flex;
     min-height: 100vh;
     background: var(--bg-primary);
 }
 
-/* ============================================
-   SIDEBAR
-   ============================================ */
 .sidebar {
     width: 240px;
     background: var(--bg-secondary);
@@ -135,9 +123,6 @@
     color: #f43f5e !important;
 }
 
-/* ============================================
-   MAIN CONTENT
-   ============================================ */
 .main-content {
     margin-left: 240px;
     flex: 1;
@@ -145,9 +130,6 @@
     min-height: 100vh;
 }
 
-/* ============================================
-   TOPBAR
-   ============================================ */
 .topbar {
     display: flex;
     align-items: center;
@@ -213,9 +195,6 @@
     color: var(--cyan);
 }
 
-/* ============================================
-   STAT CARDS
-   ============================================ */
 .stat-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -280,9 +259,6 @@
     transition: width 1s ease;
 }
 
-/* ============================================
-   DASHBOARD GRID
-   ============================================ */
 .dashboard-grid {
     display: grid;
     grid-template-columns: 1fr 340px;
@@ -296,9 +272,6 @@
     gap: 16px;
 }
 
-/* ============================================
-   PANELS
-   ============================================ */
 .dash-panel {
     background: var(--bg-card);
     border: 1px solid var(--border);
@@ -339,9 +312,6 @@
     opacity: 0.8;
 }
 
-/* ============================================
-   SKILL GAP LIST
-   ============================================ */
 .skill-gap-list {
     display: flex;
     flex-direction: column;
@@ -436,9 +406,6 @@
     flex-shrink: 0;
 }
 
-/* ============================================
-   CAREER READINESS RING
-   ============================================ */
 .readiness-wrap {
     display: flex;
     align-items: center;
@@ -478,9 +445,6 @@
     line-height: 1.5;
 }
 
-/* ============================================
-   SIMULATION RESULT
-   ============================================ */
 .sim-result {
     display: flex;
     align-items: center;
@@ -508,9 +472,6 @@
     font-size: 12px !important;
 }
 
-/* ============================================
-   CERTIFICATION ROWS
-   ============================================ */
 .cert-row {
     display: flex;
     align-items: center;
@@ -559,9 +520,6 @@
     color: var(--text-muted);
 }
 
-/* ============================================
-   EMPTY STATE
-   ============================================ */
 .empty-state {
     text-align: center;
     padding: 20px 0;
@@ -573,9 +531,6 @@
     margin-bottom: 12px;
 }
 
-/* ============================================
-   BUTTONS KECIL
-   ============================================ */
 .btn-sm-cyan {
     display: inline-block;
     font-size: 12px;
@@ -593,9 +548,6 @@
     background: rgba(34, 211, 238, 0.15);
 }
 
-/* ============================================
-   RESPONSIVE
-   ============================================ */
 @media (max-width: 1200px) {
     .stat-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -648,17 +600,11 @@
     }
 }
 
-/* ============================================
-   TAMBAHAN — Mengganti semua inline style
-   ============================================ */
-
-/* Stat icon variants */
 .stat-icon--cyan   { background: rgba(34,211,238,0.1);  color: #22d3ee; }
 .stat-icon--blue   { background: rgba(59,130,246,0.1);  color: #3b82f6; }
 .stat-icon--green  { background: rgba(16,185,129,0.1);  color: #10b981; }
 .stat-icon--purple { background: rgba(167,139,250,0.1); color: #a78bfa; }
 
-/* Stat value colors */
 .value--green  { color: #10b981; }
 .value--amber  { color: #f59e0b; }
 .value--red    { color: #ef4444; }
@@ -666,40 +612,32 @@
 .value--blue   { color: #3b82f6; }
 .value--purple { color: #a78bfa; }
 
-/* Stat bar fill colors */
 .stat-bar-fill--cyan { background: #22d3ee; }
 .stat-bar-fill--blue { background: #3b82f6; }
 
-/* Nav group label top margin */
 .nav-group-label--mt { margin-top: 16px; }
 
-/* Skill gap right side flex */
 .skill-gap-right {
     display: flex;
     align-items: center;
     gap: 8px;
 }
 
-/* Bar student color variants */
 .bar-student--green { background: #10b981; }
 .bar-student--amber { background: #f59e0b; }
 .bar-student--red   { background: #ef4444; }
 
-/* Legend dot colors */
 .legend-dot--industry { background: #334155; }
 .legend-dot--student  { background: #22d3ee; }
 
-/* Ring progress color variants */
 .ring-progress.ring--green { stroke: #10b981; }
 .ring-progress.ring--amber { stroke: #f59e0b; }
 .ring-progress.ring--red   { stroke: #ef4444; }
 
-/* Sim prob color variants */
 .sim-prob--green { color: #10b981; }
 .sim-prob--amber { color: #f59e0b; }
 .sim-prob--red   { color: #ef4444; }
 
-/* Sim date smaller text */
 .sim-date {
     font-size: 11px !important;
     margin-top: 4px;

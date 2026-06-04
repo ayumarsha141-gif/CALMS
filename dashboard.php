@@ -1,7 +1,7 @@
 <?php
 session_start();
-require_once '../includes/auth_guard.php';
-require_once '../config/database.php';
+require_once 'includes/auth_guard.php';
+require_once 'config/database.php';
 
 requireRole('mahasiswa');
 $user = getCurrentUser();
@@ -364,6 +364,7 @@ $offset = $circumference - ($readinessScore / 100) * $circumference;
     </div>
 </main>
 
+<script src="main.js"></script>
 <script>
 const toggle  = document.getElementById('sidebarToggle');
 const sidebar = document.getElementById('sidebar');
@@ -372,7 +373,6 @@ toggle?.addEventListener('click', () => sidebar.classList.toggle('open'));
 document.querySelectorAll('[data-width]').forEach(el => {
     el.style.width = el.dataset.width + '%';
 });
-<script src="main.js"></script>
 </script>
 
 </body>

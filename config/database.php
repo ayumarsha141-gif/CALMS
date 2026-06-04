@@ -1,5 +1,4 @@
 <?php
-// config/database.php — Koneksi PDO (PDO Prepared Statement sesuai kriteria)
 
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'calms_db');

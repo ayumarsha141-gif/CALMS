@@ -1,5 +1,4 @@
 <?php
-// includes/auth_guard.php
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
