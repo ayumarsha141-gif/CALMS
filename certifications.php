@@ -248,9 +248,8 @@ $activePage = 'certifications';
                     <label class="form-label">Tanggal Diperoleh (opsional)</label>
                     <input class="form-input" type="date" name="obtained_date" style="max-width:250px;">
                 </div>
-                <button type="submit" name="add_cert" class="save-btn">
-                    <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                    Tambah Sertifikasi
+                <button type="submit" name="add_cert" class="btn-add-cert" style="font-size:13px;padding:10px 22px;">
+                    + Tambah Sertifikasi
                 </button>
             </form>
         </div>

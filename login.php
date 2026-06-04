@@ -9,7 +9,6 @@ if (isset($_SESSION['user_id'])) {
     else header('Location: dashboard.php');
     exit;
 }
-
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

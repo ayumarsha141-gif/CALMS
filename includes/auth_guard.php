@@ -6,7 +6,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 function requireLogin(): void {
     if (!isset($_SESSION['user_id'])) {
-        header('Location: ' . getBaseUrl() . '/login.php');
+        header('Location: login.php');
         exit;
     }
 }
@@ -34,12 +34,6 @@ function requireRole(string ...$roles): void {
 </html>';
         exit;
     }
-}
-
-function getBaseUrl(): string {
-    $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-    $host     = $_SERVER['HTTP_HOST'];
-    return $protocol . '://' . $host;
 }
 
 function getCurrentUser(): array {

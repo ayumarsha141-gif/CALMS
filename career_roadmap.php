@@ -54,6 +54,44 @@ $roadmaps = [
         ['phase'=>'Advanced','label'=>'Ethical Hacking','months'=>'6-9','tasks'=>['Metasploit framework','Web app security testing','Incident response','Security operations (SOC)'],'color'=>'#f59e0b'],
         ['phase'=>'Sertifikasi','label'=>'Cert & Career','months'=>'10-12','tasks'=>['CompTIA Security+','CEH certification','SIEM tools (Splunk)','Portfolio CTF writeups'],'color'=>'#10b981'],
     ],
+
+    'Backend Developer' => [
+        ['phase'=>'Fondasi','label'=>'Dasar Backend','months'=>'1-2','tasks'=>['PHP / Python / Node.js dasar','SQL & relational database','Git & version control','HTTP & REST basics'],'color'=>'#22d3ee'],
+        ['phase'=>'Framework','label'=>'Framework & API','months'=>'3-5','tasks'=>['Laravel / Express.js / Django','RESTful API development','Authentication (JWT, OAuth)','Database ORM & migrations'],'color'=>'#a78bfa'],
+        ['phase'=>'Advanced','label'=>'Scalability & Security','months'=>'6-9','tasks'=>['Caching (Redis)','Message queues','API security best practices','Unit & integration testing'],'color'=>'#f59e0b'],
+        ['phase'=>'Deployment','label'=>'DevOps & Launch','months'=>'10-12','tasks'=>['Docker & containerization','CI/CD pipeline','Cloud deployment (AWS/GCP)','Portfolio & interview prep'],'color'=>'#10b981'],
+    ],
+    'Frontend Developer' => [
+        ['phase'=>'Fondasi','label'=>'HTML/CSS/JS','months'=>'1-2','tasks'=>['HTML5 semantik','CSS3 & Flexbox/Grid','JavaScript ES6+','Responsive design'],'color'=>'#22d3ee'],
+        ['phase'=>'Framework','label'=>'React / Vue','months'=>'3-5','tasks'=>['React.js / Vue.js','State management (Redux/Pinia)','REST API integration','Component architecture'],'color'=>'#a78bfa'],
+        ['phase'=>'Advanced','label'=>'Performance & UX','months'=>'6-9','tasks'=>['TypeScript','Web performance optimization','Testing (Jest, Cypress)','Accessibility (a11y)'],'color'=>'#f59e0b'],
+        ['phase'=>'Portfolio','label'=>'Build & Deploy','months'=>'10-12','tasks'=>['SSR/SSG (Next.js/Nuxt)','CI/CD & Vercel/Netlify','Portfolio projects','Meta Front-End Certificate'],'color'=>'#10b981'],
+    ],
+    'Data Analyst' => [
+        ['phase'=>'Fondasi','label'=>'Data Basics','months'=>'1-2','tasks'=>['Excel & Google Sheets','SQL dasar & query','Statistik deskriptif','Python untuk data (Pandas)'],'color'=>'#22d3ee'],
+        ['phase'=>'Visualization','label'=>'Data Viz & BI','months'=>'3-5','tasks'=>['Tableau / Power BI','Matplotlib & Seaborn','Dashboard design','Storytelling dengan data'],'color'=>'#a78bfa'],
+        ['phase'=>'Advanced','label'=>'Analytics Lanjut','months'=>'6-9','tasks'=>['A/B testing & statistik inferensial','Cohort & funnel analysis','SQL advanced (window functions)','Google Analytics / Looker'],'color'=>'#f59e0b'],
+        ['phase'=>'Sertifikasi','label'=>'Cert & Portfolio','months'=>'10-12','tasks'=>['Google Data Analytics Cert','Kaggle competitions','Portfolio dashboard','Internship / freelance project'],'color'=>'#10b981'],
+    ],
+    'ML Engineer' => [
+        ['phase'=>'Fondasi','label'=>'Math & Python','months'=>'1-2','tasks'=>['Python & NumPy/Pandas','Linear algebra & probabilitas','Statistik inferensial','Git & Jupyter Notebook'],'color'=>'#22d3ee'],
+        ['phase'=>'ML Core','label'=>'Machine Learning','months'=>'3-6','tasks'=>['Scikit-learn & ML algorithms','Feature engineering','Model evaluation & tuning','Supervised & unsupervised learning'],'color'=>'#a78bfa'],
+        ['phase'=>'Deep Learning','label'=>'Neural Networks','months'=>'7-9','tasks'=>['TensorFlow / PyTorch','CNN, RNN, Transformer','Transfer learning','MLOps basics'],'color'=>'#f59e0b'],
+        ['phase'=>'Deployment','label'=>'Production ML','months'=>'10-12','tasks'=>['Model serving (FastAPI/Flask)','Docker & cloud ML (Vertex AI/SageMaker)','TensorFlow Developer Cert','Kaggle & portfolio'],'color'=>'#10b981'],
+    ],
+    'DevOps Engineer' => [
+        ['phase'=>'Fondasi','label'=>'Linux & Scripting','months'=>'1-2','tasks'=>['Linux administration','Bash & Python scripting','Networking fundamentals','Git & version control'],'color'=>'#22d3ee'],
+        ['phase'=>'CI/CD','label'=>'Pipeline & Automation','months'=>'3-5','tasks'=>['Docker & containerization','GitHub Actions / Jenkins','Infrastructure as Code (Terraform)','Ansible & configuration management'],'color'=>'#a78bfa'],
+        ['phase'=>'Cloud','label'=>'Cloud & Kubernetes','months'=>'6-9','tasks'=>['AWS / GCP / Azure fundamentals','Kubernetes & Helm','Monitoring (Prometheus, Grafana)','Service mesh & microservices'],'color'=>'#f59e0b'],
+        ['phase'=>'Sertifikasi','label'=>'Cert & Specialization','months'=>'10-12','tasks'=>['AWS DevOps Engineer Cert','Google Cloud Professional','SRE practices','Portfolio & open-source contrib'],'color'=>'#10b981'],
+    ],
+    'UI/UX Designer' => [
+        ['phase'=>'Fondasi','label'=>'Design Basics','months'=>'1-2','tasks'=>['Prinsip desain (kontras, hierarki, spasi)','Tipografi & color theory','Figma dasar','User research methods'],'color'=>'#22d3ee'],
+        ['phase'=>'UX Process','label'=>'Research & Wireframe','months'=>'3-5','tasks'=>['User persona & journey map','Wireframing & prototyping','Usability testing','Information architecture'],'color'=>'#a78bfa'],
+        ['phase'=>'UI Design','label'=>'Visual & Interaction','months'=>'6-9','tasks'=>['Design system & component library','Micro-interactions & animation','Responsive & mobile design','Handoff ke developer (Zeplin)'],'color'=>'#f59e0b'],
+        ['phase'=>'Portfolio','label'=>'Case Study & Cert','months'=>'10-12','tasks'=>['3+ case study portfolio','Google UX Design Certificate','Dribbble / Behance presence','Internship / freelance project'],'color'=>'#10b981'],
+    ],
+    'Cybersecurity Analyst' => [
     'Cloud Engineer' => [
         ['phase'=>'Fondasi','label'=>'Linux & Networking','months'=>'1-2','tasks'=>['Linux administration','Networking & protocols','Bash scripting','Git & version control'],'color'=>'#22d3ee'],
         ['phase'=>'Cloud Core','label'=>'AWS / GCP Basics','months'=>'3-5','tasks'=>['Cloud fundamentals','AWS EC2, S3, RDS','IAM & security policies','Serverless functions (Lambda)'],'color'=>'#a78bfa'],
