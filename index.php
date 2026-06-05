@@ -3,8 +3,8 @@ session_start();
 if (isset($_SESSION['user_id'])) {
     $role = $_SESSION['role'];
     if ($role === 'admin') header('Location: dashboard.php');
-elseif ($role === 'dosen') header('Location: dashboard.php');
-else header('Location: dashboard.php');
+    elseif ($role === 'dosen') header('Location: dashboard.php');
+    else header('Location: dashboard.php');
     exit;
 }
 ?>

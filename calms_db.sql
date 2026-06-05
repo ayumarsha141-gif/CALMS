@@ -1,15 +1,6 @@
--- ============================================================
---  CALMS — Career Adaptive Learning Management System
---  Database Schema v2.0
---  Jalankan di phpMyAdmin atau MySQL CLI
--- ============================================================
-
 CREATE DATABASE IF NOT EXISTS calms_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE calms_db;
 
--- ============================================================
--- 1. USERS
--- ============================================================
 CREATE TABLE IF NOT EXISTS users (
     id         INT AUTO_INCREMENT PRIMARY KEY,
     fullname   VARCHAR(255) NOT NULL,
@@ -20,9 +11,6 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
--- ============================================================
--- 2. MAHASISWA PROFILES
--- ============================================================
 CREATE TABLE IF NOT EXISTS mahasiswa_profiles (
     id             INT AUTO_INCREMENT PRIMARY KEY,
     user_id        INT UNIQUE NOT NULL,
@@ -38,9 +26,6 @@ CREATE TABLE IF NOT EXISTS mahasiswa_profiles (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
--- ============================================================
--- 3. SKILLS (Katalog standar industri)
--- ============================================================
 CREATE TABLE IF NOT EXISTS skills (
     id              INT AUTO_INCREMENT PRIMARY KEY,
     skill_name      VARCHAR(100) NOT NULL,
@@ -80,9 +65,6 @@ INSERT INTO skills (skill_name, category, industry_level) VALUES
 ('Figma / UI Design','Design',         7),
 ('Cybersecurity',    'Security',       8);
 
--- ============================================================
--- 4. STUDENT SKILLS
--- ============================================================
 CREATE TABLE IF NOT EXISTS student_skills (
     id            INT AUTO_INCREMENT PRIMARY KEY,
     student_id    INT NOT NULL,
@@ -93,13 +75,6 @@ CREATE TABLE IF NOT EXISTS student_skills (
     FOREIGN KEY (skill_id)   REFERENCES skills(id)
 ) ENGINE=InnoDB;
 
--- ============================================================
--- 5. CERTIFICATIONS CATALOG (dengan sistem Tiering)
--- ============================================================
--- Tier 1 (score=100): Sertifikasi Vendor Internasional
--- Tier 2 (score=75):  Sertifikasi Nasional BNSP
--- Tier 3 (score=50):  Certificate Kursus Biasa
--- ============================================================
 CREATE TABLE IF NOT EXISTS certifications (
     id               INT AUTO_INCREMENT PRIMARY KEY,
     cert_name        VARCHAR(255) NOT NULL,
@@ -141,9 +116,6 @@ INSERT INTO certifications (cert_name, provider, tier, score, category, career_r
 ('Flutter & Dart Development',              'Udemy',               3,  50, 'Mobile',          'Mobile Developer'),
 ('SQL for Data Science',                    'Coursera / UC Davis', 3,  50, 'Database',        'Data Analyst, DBA');
 
--- ============================================================
--- 6. STUDENT CERTIFICATIONS (yang dimiliki mahasiswa)
--- ============================================================
 CREATE TABLE IF NOT EXISTS student_certifications (
     id            INT AUTO_INCREMENT PRIMARY KEY,
     student_id    INT NOT NULL,
@@ -157,12 +129,6 @@ CREATE TABLE IF NOT EXISTS student_certifications (
     FOREIGN KEY (student_id) REFERENCES mahasiswa_profiles(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
--- ============================================================
--- 7. STUDENT PROJECTS (Portofolio)
--- ============================================================
--- scale 'besar': Tugas Akhir/Client/Teamwork  → score 40
--- scale 'kecil': Tugas harian/Individual      → score 20
--- ============================================================
 CREATE TABLE IF NOT EXISTS student_projects (
     id            INT AUTO_INCREMENT PRIMARY KEY,
     student_id    INT NOT NULL,
@@ -177,9 +143,6 @@ CREATE TABLE IF NOT EXISTS student_projects (
     FOREIGN KEY (student_id) REFERENCES mahasiswa_profiles(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
--- ============================================================
--- 8. SIMULATIONS (Hasil Monte Carlo)
--- ============================================================
 CREATE TABLE IF NOT EXISTS simulations (
     id                INT AUTO_INCREMENT PRIMARY KEY,
     student_id        INT NOT NULL,
@@ -195,9 +158,6 @@ CREATE TABLE IF NOT EXISTS simulations (
     FOREIGN KEY (student_id) REFERENCES mahasiswa_profiles(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
--- ============================================================
--- 9. LABS (Rekomendasi Lab TA)
--- ============================================================
 CREATE TABLE IF NOT EXISTS labs (
     id          INT AUTO_INCREMENT PRIMARY KEY,
     lab_name    VARCHAR(100) NOT NULL,
@@ -213,9 +173,6 @@ INSERT INTO labs (lab_name, description, focus_area, skill_tags) VALUES
 ('Lab Jaringan Komputer',         'Networking, Cybersecurity, Cloud Infrastructure',                  'Network/Cloud',  'Linux,Docker,AWS,Kubernetes,Networking,Cybersecurity'),
 ('Lab Multimedia & Desain',       'UI/UX Design, Multimedia, Grafik Komputer',                       'Design',         'Figma,CSS,JavaScript,UI/UX,Adobe');
 
--- ============================================================
--- DEMO USER (untuk testing — password: password123)
--- ============================================================
 INSERT IGNORE INTO users (fullname, email, password, role) VALUES
 ('Gusti Ayu Marsha W.', 'marsha@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'mahasiswa');
 

@@ -130,7 +130,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <?php
                     $careers = ['Backend Developer','Frontend Developer','Full Stack Developer',
                                 'Data Scientist','Data Analyst','ML Engineer','Cloud Engineer',
-                                'DevOps Engineer','Cybersecurity','Mobile Developer','UI/UX Designer'];
+                                'DevOps Engineer','Cybersecurity Analyst','Mobile Developer','UI/UX Designer'];
                     foreach ($careers as $c):
                         $sel = (($_POST['target_career'] ?? '') === $c) ? 'selected' : '';
                     ?>
