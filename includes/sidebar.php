@@ -22,7 +22,16 @@ $nav = [
     </div>
 
     <div class="sidebar-user">
+        <?php
+        $avatarPath = $profile['avatar_path'] ?? '';
+        $avatarFile = $avatarPath ? __DIR__ . '/../' . $avatarPath : '';
+        $hasSidebarAvatar = $avatarFile && file_exists($avatarFile);
+        ?>
+        <?php if ($hasSidebarAvatar): ?>
+        <img src="../<?= htmlspecialchars($avatarPath) ?>" alt="Avatar" class="user-avatar" style="object-fit:cover;">
+        <?php else: ?>
         <div class="user-avatar"><?= strtoupper(substr($user['fullname'] ?? 'U', 0, 2)) ?></div>
+        <?php endif; ?>
         <div class="user-info">
             <strong><?= htmlspecialchars(explode(' ', $user['fullname'] ?? 'User')[0]) ?></strong>
             <span><?= htmlspecialchars($profile['nim'] ?? '-') ?></span>
