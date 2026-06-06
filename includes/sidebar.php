@@ -1,9 +1,5 @@
 <?php
-/**
- * CALMS — Reusable Sidebar Component
- * Usage: set $activePage before including this file
- * $activePage: 'dashboard' | 'skill_gap' | 'roadmap' | 'simulation' | 'certifications' | 'lab' | 'industry' | 'profile'
- */
+
 if (!isset($activePage)) $activePage = '';
 
 $nav = [

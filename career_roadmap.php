@@ -12,8 +12,22 @@ $stmt->execute([$user['id']]);
 $profile = $stmt->fetch();
 $studentId = $profile['id'];
 
+<<<<<<< HEAD
 // Get target career ID
 $targetCareerName = $profile['target_career'] ?? '';
+=======
+$stmt = $db->prepare("
+    SELECT s.skill_name, s.category, s.industry_level,
+           COALESCE(ss.student_level, 0) AS student_level,
+           (s.industry_level - COALESCE(ss.student_level, 0)) AS gap
+    FROM skills s
+    LEFT JOIN student_skills ss ON ss.skill_id = s.id
+        AND ss.student_id = (SELECT id FROM mahasiswa_profiles WHERE user_id = ?)
+    ORDER BY gap DESC
+");
+$stmt->execute([$user['id']]);
+$allSkills = $stmt->fetchAll();
+>>>>>>> b7b294ad7a0bb0880777640ce9324cbf85b5bf87
 
 // Handle career change from this page
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_career'])) {
@@ -26,15 +40,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_career'])) {
     }
 }
 
+<<<<<<< HEAD
 // All available roles from career_positions table
 $stmt = $db->query("SELECT id, position_name FROM career_positions");
 $allRoles = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+=======
+$roadmaps = [
+    'Data Scientist'     => [
+        ['phase'=>'Fondasi','label'=>'Kuasai Dasar','months'=>'1-2','tasks'=>['Python dasar & OOP','SQL & manipulasi data','Statistik deskriptif & probabilitas','Linear algebra & kalkulus dasar'],'color'=>'#22d3ee'],
+        ['phase'=>'Core Skills','label'=>'Data Science Core','months'=>'3-5','tasks'=>['Pandas, NumPy, Matplotlib','Machine Learning (Scikit-learn)','Feature engineering','Model evaluation & validation'],'color'=>'#a78bfa'],
+        ['phase'=>'Advanced','label'=>'Deep Learning & BI','months'=>'6-9','tasks'=>['TensorFlow / PyTorch','Deep Learning & Neural Networks','Data visualization (Tableau/Power BI)','NLP & Computer Vision intro'],'color'=>'#f59e0b'],
+        ['phase'=>'Portfolio','label'=>'Proyek & Sertifikasi','months'=>'10-12','tasks'=>['Kaggle competitions','Google Data Analytics Cert','Portfolio di GitHub','Kontribusi open-source'],'color'=>'#10b981'],
+    ],
+    'Full Stack Developer' => [
+        ['phase'=>'Fondasi','label'=>'HTML/CSS/JS','months'=>'1-2','tasks'=>['HTML5 semantik','CSS3 & Flexbox/Grid','JavaScript ES6+','Git & version control'],'color'=>'#22d3ee'],
+        ['phase'=>'Frontend','label'=>'Framework Frontend','months'=>'3-5','tasks'=>['React.js / Vue.js','State management','REST API integration','Responsive design'],'color'=>'#a78bfa'],
+        ['phase'=>'Backend','label'=>'Server & Database','months'=>'6-8','tasks'=>['Node.js / Laravel / Django','RESTful API development','SQL & NoSQL database','Authentication & security'],'color'=>'#f59e0b'],
+        ['phase'=>'Deployment','label'=>'DevOps & Launch','months'=>'9-12','tasks'=>['Docker & containers','CI/CD pipeline','Cloud deployment (AWS/GCP)','Portfolio & interview prep'],'color'=>'#10b981'],
+    ],
+    'Cybersecurity Analyst' => [
+        ['phase'=>'Fondasi','label'=>'Networking Basics','months'=>'1-2','tasks'=>['TCP/IP & networking fundamentals','Linux command line','Kriptografi dasar','Security concepts & CIA triad'],'color'=>'#22d3ee'],
+        ['phase'=>'Security Core','label'=>'Security Tools','months'=>'3-5','tasks'=>['Penetration testing basics','Wireshark & network analysis','Vulnerability scanning','OWASP Top 10'],'color'=>'#a78bfa'],
+        ['phase'=>'Advanced','label'=>'Ethical Hacking','months'=>'6-9','tasks'=>['Metasploit framework','Web app security testing','Incident response','Security operations (SOC)'],'color'=>'#f59e0b'],
+        ['phase'=>'Sertifikasi','label'=>'Cert & Career','months'=>'10-12','tasks'=>['CompTIA Security+','CEH certification','SIEM tools (Splunk)','Portfolio CTF writeups'],'color'=>'#10b981'],
+    ],
+>>>>>>> b7b294ad7a0bb0880777640ce9324cbf85b5bf87
 
 if (!$targetCareerName && !empty($allRoles)) {
     // default
     $targetCareerName = current($allRoles);
 }
 
+<<<<<<< HEAD
 $careerId = array_search($targetCareerName, $allRoles);
 
 // Fetch Roadmap Steps and Student Grades
@@ -51,6 +88,9 @@ if ($careerId) {
     $stmt->execute([$studentId, $careerId]);
     $roadmapSteps = $stmt->fetchAll();
 }
+=======
+$roadmap = $roadmaps[$targetCareer] ?? $roadmaps['Data Scientist'];
+>>>>>>> b7b294ad7a0bb0880777640ce9324cbf85b5bf87
 
 $activePage = 'roadmap';
 
@@ -140,7 +180,10 @@ function convertGradeToScore($grade) {
         </div>
     </div>
 
+<<<<<<< HEAD
     <!-- Timeline / Steps -->
+=======
+>>>>>>> b7b294ad7a0bb0880777640ce9324cbf85b5bf87
     <div class="roadmap-timeline">
         <?php if (empty($roadmapSteps)): ?>
             <div style="text-align:center; padding: 40px; background: rgba(255,255,255,0.05); border-radius: 8px;">

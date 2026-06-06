@@ -12,7 +12,6 @@ $stmt->execute([$user['id']]);
 $profile = $stmt->fetch();
 $studentId = $profile['id'];
 
-// Handle add cert
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['add_cert'])) {
         $certName = trim($_POST['cert_name'] ?? '');

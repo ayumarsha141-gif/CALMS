@@ -18,9 +18,18 @@ USE calms_db;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
+<<<<<<< HEAD
 --
 -- Table structure for table `career_courses`
 --
+=======
+CREATE TABLE IF NOT EXISTS skills (
+    id              INT AUTO_INCREMENT PRIMARY KEY,
+    skill_name      VARCHAR(100) NOT NULL,
+    category        VARCHAR(50),
+    industry_level  INT DEFAULT 8  
+) ENGINE=InnoDB;
+>>>>>>> b7b294ad7a0bb0880777640ce9324cbf85b5bf87
 
 DROP TABLE IF EXISTS `career_courses`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -37,9 +46,21 @@ CREATE TABLE `career_courses` (
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+<<<<<<< HEAD
 --
 -- Dumping data for table `career_courses`
 --
+=======
+CREATE TABLE IF NOT EXISTS student_skills (
+    id            INT AUTO_INCREMENT PRIMARY KEY,
+    student_id    INT NOT NULL,
+    skill_id      INT NOT NULL,
+    student_level INT DEFAULT 0,  
+    UNIQUE KEY uq_student_skill (student_id, skill_id),
+    FOREIGN KEY (student_id) REFERENCES mahasiswa_profiles(id) ON DELETE CASCADE,
+    FOREIGN KEY (skill_id)   REFERENCES skills(id)
+) ENGINE=InnoDB;
+>>>>>>> b7b294ad7a0bb0880777640ce9324cbf85b5bf87
 
 LOCK TABLES `career_courses` WRITE;
 /*!40000 ALTER TABLE `career_courses` DISABLE KEYS */;
@@ -47,9 +68,41 @@ INSERT INTO `career_courses` VALUES (1,1,22),(2,1,32),(3,1,38),(4,2,21);
 /*!40000 ALTER TABLE `career_courses` ENABLE KEYS */;
 UNLOCK TABLES;
 
+<<<<<<< HEAD
 --
 -- Table structure for table `career_positions`
 --
+=======
+INSERT INTO certifications (cert_name, provider, tier, score, category, career_relevance) VALUES
+('AWS Certified Cloud Practitioner',        'Amazon Web Services', 1, 100, 'Cloud',           'Cloud Engineer, DevOps'),
+('AWS Certified Solutions Architect',       'Amazon Web Services', 1, 100, 'Cloud',           'Cloud Engineer, Backend'),
+('Google Associate Cloud Engineer',         'Google Cloud',        1, 100, 'Cloud',           'Cloud Engineer, DevOps'),
+('Google Professional Data Engineer',       'Google Cloud',        1, 100, 'Data',            'Data Engineer, ML Engineer'),
+('Microsoft Azure Fundamentals (AZ-900)',   'Microsoft',           1, 100, 'Cloud',           'Cloud Engineer, DevOps'),
+('Cisco CCNA',                             'Cisco',               1, 100, 'Networking',      'Network Engineer, Cybersecurity'),
+('Oracle Java SE Programmer',              'Oracle',              1, 100, 'Programming',     'Backend Developer'),
+('Google Data Analytics Certificate',       'Google / Coursera',   1, 100, 'Data',            'Data Analyst, Data Scientist'),
+('Meta Front-End Developer Certificate',    'Meta / Coursera',     1, 100, 'Frontend',        'Frontend Developer'),
+('TensorFlow Developer Certificate',        'Google',              1, 100, 'AI/ML',           'ML Engineer, Data Scientist'),
+('CompTIA Security+',                       'CompTIA',             1, 100, 'Security',        'Cybersecurity Analyst'),
+('Professional Scrum Master (PSM I)',       'Scrum.org',           1, 100, 'Management',      'Project Manager, Scrum Master'),
+
+('Sertifikat Kompetensi Programmer BNSP',   'BNSP',                2,  75, 'Programming',     'Backend, Frontend Developer'),
+('Sertifikat Kompetensi Junior Network Administrator', 'BNSP',     2,  75, 'Networking',      'Network Engineer'),
+('Sertifikat Kompetensi Database Administrator', 'BNSP',           2,  75, 'Database',        'Data Engineer, DBA'),
+('Sertifikat Kompetensi Web Developer',     'BNSP',                2,  75, 'Programming',     'Full Stack Developer'),
+('Sertifikat Kompetensi Keamanan Informasi','BNSP',                2,  75, 'Security',        'Cybersecurity Analyst'),
+
+('Python for Everybody',                    'Coursera / UMich',    3,  50, 'Programming',     'Backend, Data Science'),
+('Machine Learning Specialization',         'Coursera / DeepLearning.AI', 3, 50, 'AI/ML',    'ML Engineer'),
+('The Web Developer Bootcamp',              'Udemy',               3,  50, 'Programming',     'Full Stack Developer'),
+('JavaScript Algorithms and Data Structures','freeCodeCamp',       3,  50, 'Programming',     'Frontend, Backend Developer'),
+('Responsive Web Design',                   'freeCodeCamp',        3,  50, 'Frontend',        'Frontend Developer'),
+('Data Science: R Basics',                  'edX / HarvardX',      3,  50, 'Data',            'Data Analyst'),
+('Introduction to Cybersecurity',           'Cisco NetAcad',       3,  50, 'Security',        'Cybersecurity Analyst'),
+('Flutter & Dart Development',              'Udemy',               3,  50, 'Mobile',          'Mobile Developer'),
+('SQL for Data Science',                    'Coursera / UC Davis', 3,  50, 'Database',        'Data Analyst, DBA');
+>>>>>>> b7b294ad7a0bb0880777640ce9324cbf85b5bf87
 
 DROP TABLE IF EXISTS `career_positions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -76,6 +129,7 @@ UNLOCK TABLES;
 -- Table structure for table `career_skills`
 --
 
+<<<<<<< HEAD
 DROP TABLE IF EXISTS `career_skills`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -88,6 +142,12 @@ CREATE TABLE `career_skills` (
   CONSTRAINT `career_skills_ibfk_1` FOREIGN KEY (`career_id`) REFERENCES `career_positions` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+=======
+INSERT INTO labs (lab_name, description, focus_area, skill_tags) VALUES
+('Lab Kecerdasan Buatan',        'Riset AI, Machine Learning, Deep Learning, Computer Vision, NLP', 'AI/ML',          'Python,TensorFlow,Machine Learning,Deep Learning,Data Science'),
+('Lab Sistem Informasi',          'Enterprise Systems, Database, Business Intelligence, ERP',        'Data/Enterprise', 'SQL,PHP,Java,Database,ERP,Business Intelligence'),
+('Lab Rekayasa Perangkat Lunak', 'Software Engineering, Mobile Dev, Web Application, Agile',        'Software Eng',   'Java,React,Flutter,Git,Agile,Testing');
+>>>>>>> b7b294ad7a0bb0880777640ce9324cbf85b5bf87
 
 --
 -- Dumping data for table `career_skills`

@@ -1,6 +1,5 @@
 USE calms_db;
 
--- Tabel industry_trends
 CREATE TABLE IF NOT EXISTS industry_trends (
     id          INT AUTO_INCREMENT PRIMARY KEY,
     title       VARCHAR(255) NOT NULL,
@@ -11,7 +10,6 @@ CREATE TABLE IF NOT EXISTS industry_trends (
     created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
--- Sample data
 INSERT INTO industry_trends (title, category, source, trend_date, description) VALUES
 ('AI & Machine Learning Mendominasi Rekrutmen Tech 2025',  'AI/ML',       'LinkedIn Indonesia', '2025-05-01', 'Permintaan engineer AI naik 40% dibanding tahun lalu.'),
 ('Cloud Native & Kubernetes Jadi Skill Wajib DevOps',      'Cloud/DevOps', 'JobStreet',          '2025-04-20', 'Perusahaan besar mulai mensyaratkan Kubernetes di JD DevOps.'),
