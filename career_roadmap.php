@@ -11,7 +11,6 @@ $stmt = $db->prepare("SELECT mp.*, u.fullname, u.email FROM mahasiswa_profiles m
 $stmt->execute([$user['id']]);
 $profile = $stmt->fetch();
 
-// Skills with gap
 $stmt = $db->prepare("
     SELECT s.skill_name, s.category, s.industry_level,
            COALESCE(ss.student_level, 0) AS student_level,
@@ -34,7 +33,6 @@ foreach ($allSkills as $sk) {
 $readiness = $tracked > 0 ? round($readiness / $tracked) : 0;
 $targetCareer = $profile['target_career'] ?? 'Software Engineer';
 
-// Roadmap stages berdasarkan target career
 $roadmaps = [
     'Data Scientist'     => [
         ['phase'=>'Fondasi','label'=>'Kuasai Dasar','months'=>'1-2','tasks'=>['Python dasar & OOP','SQL & manipulasi data','Statistik deskriptif & probabilitas','Linear algebra & kalkulus dasar'],'color'=>'#22d3ee'],
@@ -106,7 +104,6 @@ $roadmaps = [
     ],
 ];
 
-// Default roadmap jika tidak ada yang cocok
 $roadmap = $roadmaps[$targetCareer] ?? $roadmaps['Data Scientist'];
 
 $activePage = 'roadmap';
@@ -182,7 +179,6 @@ $activePage = 'roadmap';
         </div>
     </div>
 
-    <!-- Timeline -->
     <div class="roadmap-timeline">
         <?php foreach ($roadmap as $i => $phase): ?>
         <div class="roadmap-phase">

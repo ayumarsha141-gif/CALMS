@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS skills (
     id              INT AUTO_INCREMENT PRIMARY KEY,
     skill_name      VARCHAR(100) NOT NULL,
     category        VARCHAR(50),
-    industry_level  INT DEFAULT 8  -- /10, standar industri
+    industry_level  INT DEFAULT 8  
 ) ENGINE=InnoDB;
 
 INSERT INTO skills (skill_name, category, industry_level) VALUES
@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS student_skills (
     id            INT AUTO_INCREMENT PRIMARY KEY,
     student_id    INT NOT NULL,
     skill_id      INT NOT NULL,
-    student_level INT DEFAULT 0,  -- /10
+    student_level INT DEFAULT 0,  
     UNIQUE KEY uq_student_skill (student_id, skill_id),
     FOREIGN KEY (student_id) REFERENCES mahasiswa_profiles(id) ON DELETE CASCADE,
     FOREIGN KEY (skill_id)   REFERENCES skills(id)
@@ -86,7 +86,6 @@ CREATE TABLE IF NOT EXISTS certifications (
 ) ENGINE=InnoDB;
 
 INSERT INTO certifications (cert_name, provider, tier, score, category, career_relevance) VALUES
--- Tier 1 — Internasional
 ('AWS Certified Cloud Practitioner',        'Amazon Web Services', 1, 100, 'Cloud',           'Cloud Engineer, DevOps'),
 ('AWS Certified Solutions Architect',       'Amazon Web Services', 1, 100, 'Cloud',           'Cloud Engineer, Backend'),
 ('Google Associate Cloud Engineer',         'Google Cloud',        1, 100, 'Cloud',           'Cloud Engineer, DevOps'),
@@ -99,13 +98,13 @@ INSERT INTO certifications (cert_name, provider, tier, score, category, career_r
 ('TensorFlow Developer Certificate',        'Google',              1, 100, 'AI/ML',           'ML Engineer, Data Scientist'),
 ('CompTIA Security+',                       'CompTIA',             1, 100, 'Security',        'Cybersecurity Analyst'),
 ('Professional Scrum Master (PSM I)',       'Scrum.org',           1, 100, 'Management',      'Project Manager, Scrum Master'),
--- Tier 2 — Nasional BNSP
+
 ('Sertifikat Kompetensi Programmer BNSP',   'BNSP',                2,  75, 'Programming',     'Backend, Frontend Developer'),
 ('Sertifikat Kompetensi Junior Network Administrator', 'BNSP',     2,  75, 'Networking',      'Network Engineer'),
 ('Sertifikat Kompetensi Database Administrator', 'BNSP',           2,  75, 'Database',        'Data Engineer, DBA'),
 ('Sertifikat Kompetensi Web Developer',     'BNSP',                2,  75, 'Programming',     'Full Stack Developer'),
 ('Sertifikat Kompetensi Keamanan Informasi','BNSP',                2,  75, 'Security',        'Cybersecurity Analyst'),
--- Tier 3 — Kursus
+
 ('Python for Everybody',                    'Coursera / UMich',    3,  50, 'Programming',     'Backend, Data Science'),
 ('Machine Learning Specialization',         'Coursera / DeepLearning.AI', 3, 50, 'AI/ML',    'ML Engineer'),
 ('The Web Developer Bootcamp',              'Udemy',               3,  50, 'Programming',     'Full Stack Developer'),
@@ -169,9 +168,7 @@ CREATE TABLE IF NOT EXISTS labs (
 INSERT INTO labs (lab_name, description, focus_area, skill_tags) VALUES
 ('Lab Kecerdasan Buatan',        'Riset AI, Machine Learning, Deep Learning, Computer Vision, NLP', 'AI/ML',          'Python,TensorFlow,Machine Learning,Deep Learning,Data Science'),
 ('Lab Sistem Informasi',          'Enterprise Systems, Database, Business Intelligence, ERP',        'Data/Enterprise', 'SQL,PHP,Java,Database,ERP,Business Intelligence'),
-('Lab Rekayasa Perangkat Lunak', 'Software Engineering, Mobile Dev, Web Application, Agile',        'Software Eng',   'Java,React,Flutter,Git,Agile,Testing'),
-('Lab Jaringan Komputer',         'Networking, Cybersecurity, Cloud Infrastructure',                  'Network/Cloud',  'Linux,Docker,AWS,Kubernetes,Networking,Cybersecurity'),
-('Lab Multimedia & Desain',       'UI/UX Design, Multimedia, Grafik Komputer',                       'Design',         'Figma,CSS,JavaScript,UI/UX,Adobe');
+('Lab Rekayasa Perangkat Lunak', 'Software Engineering, Mobile Dev, Web Application, Agile',        'Software Eng',   'Java,React,Flutter,Git,Agile,Testing');
 
 INSERT IGNORE INTO users (fullname, email, password, role) VALUES
 ('Gusti Ayu Marsha W.', 'marsha@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'mahasiswa');
