@@ -15,17 +15,31 @@ $stmt = $db->prepare("SELECT mp.*, u.fullname, u.email
 $stmt->execute([$user['id']]);
 $profile = $stmt->fetch();
 
+$studentId = $profile['id'];
+
+// Ambil skill sesuai target_career (sama persis dengan skill_gap.php)
 $stmt = $db->prepare("
-    SELECT s.skill_name, s.category, s.industry_level, ss.student_level,
-           (s.industry_level - ss.student_level) AS gap
-    FROM student_skills ss
-    JOIN skills s ON s.id = ss.skill_id
-    JOIN mahasiswa_profiles mp ON mp.id = ss.student_id
-    WHERE mp.user_id = ?
+    SELECT
+        s.skill_name,
+        s.category,
+        s.industry_level,
+        COALESCE(ss.student_level, 0) AS student_level,
+        (s.industry_level - COALESCE(ss.student_level, 0)) AS gap
+    FROM skills s
+    JOIN career_skills cs
+        ON CONVERT(UPPER(TRIM(cs.skill_name)) USING utf8mb4)
+         = CONVERT(UPPER(TRIM(s.skill_name))  USING utf8mb4)
+    JOIN career_positions cp
+        ON cp.id = cs.career_id
+    LEFT JOIN student_skills ss
+        ON ss.skill_id = s.id
+        AND ss.student_id = ?
+    WHERE CONVERT(cp.position_name USING utf8mb4)
+        = CONVERT(? USING utf8mb4)
     ORDER BY gap DESC
     LIMIT 5
 ");
-$stmt->execute([$user['id']]);
+$stmt->execute([$studentId, $profile['target_career']]);
 $skills = $stmt->fetchAll();
 
 $stmt = $db->prepare("
@@ -39,26 +53,39 @@ $stmt = $db->prepare("
 $stmt->execute([$user['id']]);
 $simulation = $stmt->fetch();
 
-$stmt = $db->prepare("
-    SELECT sc.cert_name, sc.provider, sc.tier, sc.score, sc.status
-    FROM student_certifications sc
-    JOIN mahasiswa_profiles mp ON mp.id = sc.student_id
-    WHERE mp.user_id = ? AND sc.status = 'recommended'
-    ORDER BY sc.tier ASC, sc.score DESC
-    LIMIT 3
-");
-    
-$stmt->execute([$user['id']]);
-$certs = $stmt->fetchAll();
+// Jika belum ada target career atau skill belum diisi, $skills tetap array kosong
 
-// $skills tetap array kosong jika belum ada data, tampilan empty state sudah ditangani di view
-
-$totalReadiness = 0;
-foreach ($skills as $sk) {
-    $totalReadiness += ($sk['student_level'] / $sk['industry_level']) * 100;
-}
-$readinessScore = count($skills) > 0 ? round($totalReadiness / count($skills)) : 0;
+// Peluang Rekrutmen = dari probability_score simulasi (termasuk porto & sertifikasi)
 $probScore = $simulation ? round($simulation['probability_score'] * 100) : 0;
+
+// Career Readiness = 60% skill readiness + 40% avg nilai matkul (sama dengan skill_gap.php)
+$stmt = $db->prepare("
+    SELECT
+        SUM(COALESCE(ss.student_level, 0) / GREATEST(s.industry_level, 1) * 100) / COUNT(*) AS skill_part
+    FROM skills s
+    JOIN career_skills cs
+        ON CONVERT(UPPER(TRIM(cs.skill_name)) USING utf8mb4)
+         = CONVERT(UPPER(TRIM(s.skill_name))  USING utf8mb4)
+    JOIN career_positions cp
+        ON cp.id = cs.career_id
+    LEFT JOIN student_skills ss
+        ON ss.skill_id = s.id
+        AND ss.student_id = (SELECT id FROM mahasiswa_profiles WHERE user_id = ?)
+    WHERE CONVERT(cp.position_name USING utf8mb4)
+        = CONVERT((SELECT target_career FROM mahasiswa_profiles WHERE user_id = ?) USING utf8mb4)
+");
+$stmt->execute([$user['id'], $user['id']]);
+$skillPart = (float)($stmt->fetchColumn() ?? 0);
+
+$stmt = $db->prepare("
+    SELECT AVG(score)
+    FROM student_courses
+    WHERE student_id = (SELECT id FROM mahasiswa_profiles WHERE user_id = ?)
+");
+$stmt->execute([$user['id']]);
+$coursePart = (float)($stmt->fetchColumn() ?? 0);
+
+$readinessScore = (int) round(($skillPart * 0.6) + ($coursePart * 0.4));
 
 function readinessClass(int $score): string {
     if ($score >= 70) return 'value--green';
@@ -92,7 +119,19 @@ function barStudentClass(int $gap): string {
 
 $circumference = 2 * M_PI * 42;
 $offset = $circumference - ($readinessScore / 100) * $circumference;
+
+$stmt = $db->prepare("
+SELECT COUNT(*)
+FROM student_skills ss
+JOIN mahasiswa_profiles mp
+ON mp.id = ss.student_id
+WHERE mp.user_id = ?
+");
+
+$stmt->execute([$user['id']]);
+$totalSkills = $stmt->fetchColumn();
 ?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -101,11 +140,15 @@ $offset = $circumference - ($readinessScore / 100) * $circumference;
     <title>Dashboard — CALMS</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="style_patch.css">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 </head>
 <body class="dashboard-body">
 
-<?php $activePage = 'dashboard'; include 'includes/sidebar.php'; ?>
+<?php
+$activePage = 'dashboard';
+include 'includes/sidebar.php';
+?>
 
 <main class="main-content">
     <div class="topbar">
@@ -159,17 +202,7 @@ $offset = $circumference - ($readinessScore / 100) * $circumference;
             </div>
             <div class="stat-body">
                 <span class="stat-label">Skills Terdaftar</span>
-                <span class="stat-value value--green"><?= count($skills) ?></span>
-            </div>
-        </div>
-
-        <div class="stat-card">
-            <div class="stat-icon stat-icon--purple">
-                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M9 12l2 2 4-4"/></svg>
-            </div>
-            <div class="stat-body">
-                <span class="stat-label">Sertifikasi</span>
-                <span class="stat-value value--purple"><?= count($certs) ?></span>
+                <span class="stat-value value--green"><?= $totalSkills ?></span>
             </div>
         </div>
     </div>
@@ -200,11 +233,23 @@ $offset = $circumference - ($readinessScore / 100) * $circumference;
                             <span class="skill-score-txt"><?= $sk['student_level'] ?>/<?= $sk['industry_level'] ?></span>
                         </div>
                     </div>
+                
+                        <?php
+                        $indPct = max(0,min(100,$indPct));
+                        $pct    = max(0,min(100,$pct));
+                        ?>
                     <div class="skill-gap-bars">
-                        <div class="double-bar">
-                            <div class="bar-industry" data-width="<?= $indPct ?>"></div>
-                            <div class="bar-student <?= barStudentClass($gap) ?>" data-width="<?= $pct ?>"></div>
+
+                        <div class="bar-track">
+                            <div class="bar-industry"
+                                style="width:<?= $indPct ?>%"></div>
                         </div>
+
+                        <div class="bar-track">
+                            <div class="bar-student <?= barStudentClass($gap) ?>"
+                                style="width:<?= $pct ?>%"></div>
+                        </div>
+
                     </div>
                 </div>
                 <?php endforeach; ?>
@@ -261,8 +306,8 @@ $offset = $circumference - ($readinessScore / 100) * $circumference;
                         <?= $probScore ?>%
                     </div>
                     <div class="sim-detail">
-                        <p><strong><?= htmlspecialchars($simulation['target_role'] ?? 'N/A') ?></strong></p>
-                        <p class="muted-txt"><?= htmlspecialchars($simulation['target_company'] ?? 'N/A') ?></p>
+                        <p><strong><?= htmlspecialchars($simulation['target_role'] ?? '-') ?></strong></p>
+                        <p class="muted-txt"><?= htmlspecialchars($simulation['target_company'] ?? '-') ?></p>
                         <p class="muted-txt sim-date">
                             <?= date('d M Y', strtotime($simulation['created_at'])) ?>
                         </p>
@@ -273,30 +318,6 @@ $offset = $circumference - ($readinessScore / 100) * $circumference;
                     <p>Belum ada simulasi.</p>
                     <a href="simulation.php" class="btn-sm-cyan">Mulai Simulasi →</a>
                 </div>
-                <?php endif; ?>
-            </div>
-
-            <div class="dash-panel">
-                <div class="panel-header">
-                    <h2 class="panel-title">Sertifikasi Direkomendasikan</h2>
-                    <a href="certifications.php" class="panel-link">Semua →</a>
-                </div>
-                <?php if (!empty($certs)): ?>
-                    <?php foreach ($certs as $i => $cert): ?>
-                    <div class="cert-row">
-                        <div class="cert-rank rank-<?= $i+1 ?>"><?= $i+1 ?></div>
-                        <div class="cert-info">
-                            <strong><?= htmlspecialchars($cert['cert_name']) ?></strong>
-                            <?php $tierLabel = $cert['tier'] == 1 ? 'Internasional' : ($cert['tier'] == 2 ? 'BNSP' : 'Kursus'); ?>
-                            <span><?= htmlspecialchars($cert['provider']) ?> · Tier <?= $cert['tier'] ?> — <?= $tierLabel ?></span>
-                        </div>
-                    </div>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <div class="empty-state">
-                        <p>Lengkapi profil skill untuk mendapatkan rekomendasi.</p>
-                        <a href="skill_gap.php" class="btn-sm-cyan">Isi Skill →</a>
-                    </div>
                 <?php endif; ?>
             </div>
 

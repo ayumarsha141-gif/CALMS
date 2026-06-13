@@ -4,10 +4,11 @@ if (!isset($activePage)) $activePage = '';
 
 $nav = [
     ['page' => 'dashboard',      'href' => 'dashboard.php',        'label' => 'Dashboard',          'icon' => '<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>'],
+    ['page' => 'input_nilai',    'href' => 'input_nilai.php',      'label' => 'Input Nilai Mata Kuliah',   'icon' => '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 0 4 24V4.5A2.5 2.5 0 0 1 6.5 2z"/>'],
     ['page' => 'skill_gap',      'href' => 'skill_gap.php',        'label' => 'Skill Gap',           'icon' => '<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>'],
     ['page' => 'roadmap',        'href' => 'career_roadmap.php',   'label' => 'Career Roadmap',      'icon' => '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>'],
     ['page' => 'simulation',     'href' => 'simulation.php',       'label' => 'Simulasi Rekrutmen',  'icon' => '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>'],
-    ['page' => 'certifications', 'href' => 'certifications.php',   'label' => 'Sertifikasi',         'icon' => '<circle cx="12" cy="8" r="6"/><path d="M9 12l2 2 4-4m-8 8h10"/>'],
+    ['page' => 'certifications', 'href' => 'certifications.php',   'label' => 'Sertifikasi dan Portofolio',         'icon' => '<circle cx="12" cy="8" r="6"/><path d="M9 12l2 2 4-4m-8 8h10"/>'],
     ['page' => 'lab',            'href' => 'lab_recommendation.php','label' => 'Lab Recommendation', 'icon' => '<path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"/>'],
     ['page' => 'industry',       'href' => 'industry_insight.php', 'label' => 'Industry Insight',    'icon' => '<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>'],
 ];

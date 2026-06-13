@@ -195,22 +195,24 @@
     color: var(--cyan);
 }
 
+/* ── STAT GRID: 3 kolom full width, tinggi rata ── */
 .stat-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-    margin-bottom: 24px;
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 16px !important;
+    margin-bottom: 24px !important;
 }
 
 .stat-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    transition: var(--transition);
+    background: var(--bg-card) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: var(--radius-md) !important;
+    padding: 24px 20px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 14px !important;
+    transition: var(--transition) !important;
+    min-height: 120px !important;
 }
 
 .stat-card:hover {
@@ -219,8 +221,8 @@
 }
 
 .stat-icon {
-    width: 36px;
-    height: 36px;
+    width: 38px;
+    height: 38px;
     border-radius: var(--radius-sm);
     display: flex;
     align-items: center;
@@ -231,16 +233,18 @@
 .stat-body {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 4px;
+    flex: 1;
 }
 
 .stat-label {
     font-size: 12px;
     color: var(--text-muted);
+    letter-spacing: 0.02em;
 }
 
 .stat-value {
-    font-size: 28px;
+    font-size: 32px;
     font-weight: 700;
     font-family: var(--font-mono);
     line-height: 1;
@@ -251,6 +255,7 @@
     background: var(--border);
     border-radius: 999px;
     overflow: hidden;
+    margin-top: auto;
 }
 
 .stat-bar-fill {
@@ -259,17 +264,31 @@
     transition: width 1s ease;
 }
 
+/* ── DASHBOARD GRID: skill gap kiri, panel kanan setinggi skill gap ── */
 .dashboard-grid {
-    display: grid;
-    grid-template-columns: 1fr 340px;
-    gap: 20px;
-    align-items: start;
+    display: grid !important;
+    grid-template-columns: 1fr 360px !important;
+    gap: 20px !important;
+    align-items: stretch !important;
 }
 
 .dash-right {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+    height: 100% !important;
+}
+
+/* Panel kiri (skill gap) penuh tinggi */
+.panel-wide {
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+/* Panel kanan — Career Readiness tumbuh mengisi sisa ruang */
+.dash-right .dash-panel:first-child {
+    flex: 1 !important;
 }
 
 .dash-panel {
@@ -315,8 +334,9 @@
 .skill-gap-list {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 18px;
     margin-bottom: 16px;
+    flex: 1;
 }
 
 .skill-gap-row {
@@ -359,26 +379,26 @@
     height: 20px;
 }
 
-.double-bar {
+.bar-track {
+    height: 8px;
+    background: #1e293b;
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 4px;
     position: relative;
-    width: 100%;
-    height: 20px;
 }
 
 .bar-industry {
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 0; left: 0;
     height: 8px;
-    background: #1e293b;
+    background: #334155;
     border-radius: 999px;
-    margin-top: 2px;
 }
 
 .bar-student {
     position: absolute;
-    bottom: 0;
-    left: 0;
+    top: 0; left: 0;
     height: 8px;
     border-radius: 999px;
     transition: width 1s ease;
@@ -387,8 +407,9 @@
 .legend {
     display: flex;
     gap: 20px;
-    padding-top: 12px;
+    padding-top: 14px;
     border-top: 1px solid var(--border);
+    margin-top: auto;
 }
 
 .legend-item {
@@ -406,6 +427,7 @@
     flex-shrink: 0;
 }
 
+/* ── Career Readiness ring ── */
 .readiness-wrap {
     display: flex;
     align-items: center;
@@ -445,6 +467,7 @@
     line-height: 1.5;
 }
 
+/* ── Simulasi Terakhir ── */
 .sim-result {
     display: flex;
     align-items: center;
@@ -472,54 +495,7 @@
     font-size: 12px !important;
 }
 
-.cert-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 0;
-    border-bottom: 1px solid var(--border);
-}
-
-.cert-row:last-child {
-    border-bottom: none;
-    padding-bottom: 0;
-}
-
-.cert-rank {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 11px;
-    font-weight: 700;
-    flex-shrink: 0;
-}
-
-.rank-1 { background: rgba(250, 204, 21, 0.15); color: #facc15; }
-.rank-2 { background: rgba(148, 163, 184, 0.15); color: #94a3b8; }
-.rank-3 { background: rgba(180, 120, 80, 0.15);  color: #b47850; }
-
-.cert-info {
-    flex: 1;
-    overflow: hidden;
-}
-
-.cert-info strong {
-    display: block;
-    font-size: 13px;
-    font-weight: 600;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.cert-info span {
-    font-size: 11px;
-    color: var(--text-muted);
-}
-
+/* ── Empty state ── */
 .empty-state {
     text-align: center;
     padding: 20px 0;
@@ -548,18 +524,29 @@
     background: rgba(34, 211, 238, 0.15);
 }
 
+/* ── Responsive ── */
 @media (max-width: 1200px) {
     .stat-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
     }
 
     .dashboard-grid {
         grid-template-columns: 1fr;
+        align-items: start;
+    }
+
+    .panel-wide {
+        height: auto;
     }
 
     .dash-right {
+        height: auto;
         display: grid;
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    .dash-right .dash-panel:first-child {
+        flex: unset;
     }
 }
 
@@ -600,6 +587,7 @@
     }
 }
 
+/* ── Color utilities ── */
 .stat-icon--cyan   { background: rgba(34,211,238,0.1);  color: #22d3ee; }
 .stat-icon--blue   { background: rgba(59,130,246,0.1);  color: #3b82f6; }
 .stat-icon--green  { background: rgba(16,185,129,0.1);  color: #10b981; }

@@ -17,6 +17,9 @@ $stmt = $db->prepare("
 $stmt->execute([$user['id']]);
 $profile = $stmt->fetch();
 
+// Ambil daftar career dari tabel career_positions
+$careerPositions = $db->query("SELECT position_name FROM career_positions ORDER BY position_name ASC")->fetchAll(PDO::FETCH_COLUMN);
+
 // Ambil skill mahasiswa
 $stmt = $db->prepare("
     SELECT ss.skill_id, ss.student_level, s.skill_name, s.category, s.industry_level
@@ -95,67 +98,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt = $db->prepare("SELECT mp.*, u.fullname, u.email FROM mahasiswa_profiles mp JOIN users u ON u.id = mp.user_id WHERE mp.user_id = ?");
                 $stmt->execute([$user['id']]);
                 $profile = $stmt->fetch();
-            }
-        }
-
-        // ── Upload foto profil ──
-        elseif ($action === 'upload_avatar') {
-            if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
-                $file    = $_FILES['avatar'];
-                $allowed = ['image/jpeg','image/jpg','image/png','image/gif','image/webp'];
-                $maxSize = 5 * 1024 * 1024; // 5MB
-
-                if (!in_array($file['type'], $allowed)) {
-                    $error = 'Format foto tidak didukung. Gunakan JPG, PNG, atau WebP.';
-                } elseif ($file['size'] > $maxSize) {
-                    $error = 'Ukuran foto maksimal 5MB.';
-                } else {
-                    $uploadDir  = __DIR__ . '/uploads/avatars/';
-                    $filename   = $user['id'] . '_' . time() . '.jpg';
-                    $targetPath = $uploadDir . $filename;
-
-                    // Resize & convert to JPEG using GD
-                    $src = null;
-                    if ($file['type'] === 'image/png') {
-                        $src = imagecreatefrompng($file['tmp_name']);
-                    } elseif ($file['type'] === 'image/gif') {
-                        $src = imagecreatefromgif($file['tmp_name']);
-                    } elseif ($file['type'] === 'image/webp') {
-                        $src = imagecreatefromwebp($file['tmp_name']);
-                    } else {
-                        $src = imagecreatefromjpeg($file['tmp_name']);
-                    }
-
-                    if ($src) {
-                        $w = imagesx($src); $h = imagesy($src);
-                        $size  = min($w, $h);
-                        $dst   = imagecreatetruecolor(200, 200);
-                        // Center crop
-                        $srcX = ($w - $size) / 2;
-                        $srcY = ($h - $size) / 2;
-                        imagecopyresampled($dst, $src, 0, 0, $srcX, $srcY, 200, 200, $size, $size);
-                        imagejpeg($dst, $targetPath, 85);
-                        imagedestroy($src); imagedestroy($dst);
-
-                        // Delete old avatar
-                        if (!empty($profile['avatar_path'])) {
-                            @unlink($uploadDir . basename($profile['avatar_path']));
-                        }
-
-                        $avatarPath = 'uploads/avatars/' . $filename;
-                        try {
-                            $db->prepare("UPDATE mahasiswa_profiles SET avatar_path = ? WHERE user_id = ?")->execute([$avatarPath, $user['id']]);
-                            $success = 'Foto profil berhasil diperbarui!';
-                            $profile['avatar_path'] = $avatarPath;
-                        } catch (PDOException $e) {
-                            $success = 'Foto tersimpan tapi kolom DB belum ada. Jalankan calms_db_update2.sql terlebih dahulu.';
-                        }
-                    } else {
-                        $error = 'Gagal memproses gambar. Pastikan file tidak corrupt.';
-                    }
-                }
-            } else {
-                $error = 'Tidak ada file yang diunggah atau terjadi error upload.';
             }
         }
 
@@ -369,7 +311,7 @@ $activePage = 'profile';
             color: var(--text-primary);
             padding: 9px 12px;
             font-size: 13px;
-            font-family: var(--font-sans);
+            font-family: var(--font-main);
             transition: var(--transition);
         }
 
@@ -590,16 +532,6 @@ $activePage = 'profile';
                     <?php endif; ?>
                     <div class="profile-name"><?= htmlspecialchars($profile['fullname']) ?></div>
                     <div class="profile-nim"><?= htmlspecialchars($profile['nim'] ?? '-') ?></div>
-                    <!-- Upload foto -->
-                    <form method="POST" enctype="multipart/form-data" style="margin-top:8px;text-align:center;">
-                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                        <input type="hidden" name="action" value="upload_avatar">
-                        <label for="avatarFile" style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.25);color:var(--cyan);border-radius:999px;font-size:11px;font-weight:600;cursor:pointer;transition:.2s;">
-                            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                            <?= $hasAvatar ? 'Ganti Foto' : 'Upload Foto' ?>
-                        </label>
-                        <input type="file" id="avatarFile" name="avatar" accept="image/*" style="display:none;" onchange="this.form.submit()">
-                    </form>
                 </div>
 
                 <div style="display:flex; flex-direction:column; gap:10px;">
@@ -615,9 +547,9 @@ $activePage = 'profile';
                         <span style="color:var(--text-muted)">IPK</span>
                         <span style="font-family:var(--font-mono); color:var(--cyan)"><?= number_format($profile['ipk'] ?? 0, 2) ?></span>
                     </div>
-                    <div style="display:flex; justify-content:space-between; font-size:13px;">
-                        <span style="color:var(--text-muted)">Target Karir</span>
-                        <span style="color:var(--cyan)"><?= htmlspecialchars($profile['target_career'] ?? '-') ?></span>
+                    <div style="display:flex; justify-content:space-between; gap:10px; font-size:13px;">
+                        <span style="color:var(--text-muted); flex-shrink:0;">Target Karir</span>
+                        <span style="color:var(--cyan); text-align:right;"><?= htmlspecialchars($profile['target_career'] ?? '-') ?></span>
                     </div>
                     <?php if ($profile['linkedin_url']): ?>
                     <div style="font-size:13px;">
@@ -688,18 +620,10 @@ $activePage = 'profile';
                         <label>Target Karir</label>
                         <select name="target_career">
                             <option value="">-- Pilih target karir --</option>
-                            <?php
-                            $careers = [
-                                'Backend Developer','Frontend Developer','Full Stack Developer',
-                                'Data Scientist','Data Analyst','ML Engineer','Cloud Engineer',
-                                'DevOps Engineer','Cybersecurity Analyst','Mobile Developer',
-                                'UI/UX Designer','Network Engineer','QA Engineer',
-                                'Database Administrator','Software Architect'
-                            ];
-                            foreach ($careers as $c):
+                            <?php foreach ($careerPositions as $c):
                                 $sel = ($profile['target_career'] === $c) ? 'selected' : '';
                             ?>
-                            <option value="<?= $c ?>" <?= $sel ?>><?= $c ?></option>
+                            <option value="<?= htmlspecialchars($c) ?>" <?= $sel ?>><?= htmlspecialchars($c) ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>

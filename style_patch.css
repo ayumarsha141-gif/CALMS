@@ -1,0 +1,106 @@
+/* ── PATCH: override style.css rules yang bentrok dengan dashboard.css ──
+   Tambahkan file ini SETELAH <link href="style.css"> dan <link href="dashboard.css">
+   di dashboard.php, ATAU copy-paste isi ini ke paling bawah style.css kamu ── */
+
+/* Fix stat-grid: paksa 3 kolom, bukan auto-fit */
+.dashboard-body .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+/* Fix stat-card: tambah flex supaya konten rapi */
+.dashboard-body .stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 24px 20px;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 14px;
+    min-height: 130px;
+    transition: var(--transition);
+}
+
+/* Fix main-content margin (style.css pakai 260px, dashboard.css 240px) */
+.dashboard-body .main-content {
+    margin-left: 240px;
+}
+
+/* Fix dashboard-grid: stretch biar kolom kanan setinggi kiri */
+.dashboard-body .dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 20px;
+    align-items: stretch !important;
+}
+
+/* Fix dash-right: flex column, tinggi penuh */
+.dashboard-body .dash-right {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px;
+    height: 100%;
+}
+
+/* Career Readiness panel tumbuh mengisi sisa ruang */
+.dashboard-body .dash-right .dash-panel:first-child {
+    flex: 1 !important;
+}
+
+/* Skill gap panel tinggi penuh */
+.dashboard-body .panel-wide {
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+/* skill-gap-list mengisi ruang */
+.dashboard-body .skill-gap-list {
+    flex: 1;
+}
+
+/* legend selalu di bawah */
+.dashboard-body .legend {
+    margin-top: auto;
+}
+
+@media (max-width: 1200px) {
+    .dashboard-body .stat-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+    }
+    .dashboard-body .dashboard-grid {
+        grid-template-columns: 1fr !important;
+        align-items: start !important;
+    }
+    .dashboard-body .panel-wide {
+        height: auto !important;
+    }
+    .dashboard-body .dash-right {
+        height: auto !important;
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+    .dashboard-body .dash-right .dash-panel:first-child {
+        flex: unset !important;
+    }
+}s
+
+@media (max-width: 768px) {
+    .dashboard-body .stat-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+    .dashboard-body .main-content {
+        margin-left: 0;
+    }
+    .dashboard-body .dash-right {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .dashboard-body .stat-grid {
+        grid-template-columns: 1fr !important;
+    }
+}

@@ -26,19 +26,17 @@ $targetCareer = $profile['target_career'] ?? 'Software Engineer';
 
 // Static industry data (realistic Indonesia tech industry data)
 $industryTrends = [
-    ['role' => 'Data Scientist / ML Engineer', 'demand' => 94, 'avgSalary' => '12-25 jt', 'growth' => '+38%', 'color' => '#22d3ee', 'icon' => '🤖'],
-    ['role' => 'Cloud / DevOps Engineer',       'demand' => 91, 'avgSalary' => '13-28 jt', 'growth' => '+42%', 'color' => '#a78bfa', 'icon' => '☁️'],
-    ['role' => 'Full Stack Developer',          'demand' => 88, 'avgSalary' => '10-22 jt', 'growth' => '+29%', 'color' => '#f59e0b', 'icon' => '💻'],
-    ['role' => 'Cybersecurity Analyst',         'demand' => 86, 'avgSalary' => '12-26 jt', 'growth' => '+45%', 'color' => '#ef4444', 'icon' => '🛡️'],
-    ['role' => 'Mobile Developer (Flutter)',    'demand' => 80, 'avgSalary' => '9-20 jt',  'growth' => '+25%', 'color' => '#10b981', 'icon' => '📱'],
-    ['role' => 'UI/UX Designer',               'demand' => 75, 'avgSalary' => '8-18 jt',  'growth' => '+22%', 'color' => '#f43f5e', 'icon' => '🎨'],
+    ['role' => 'Big Data Specialist', 'demand' => 94, 'avgSalary' => '12-25 jt', 'growth' => '+38%', 'color' => '#22d3ee', 'icon' => '🤖'],
+    ['role' => 'FinTech Engineers',       'demand' => 91, 'avgSalary' => '13-28 jt', 'growth' => '+42%', 'color' => '#a78bfa', 'icon' => '☁️'],
+    ['role' => 'AI and Machine Learning Specialist',          'demand' => 88, 'avgSalary' => '10-22 jt', 'growth' => '+29%', 'color' => '#f59e0b', 'icon' => '💻'],
+    ['role' => 'Software and Applications Developers',         'demand' => 86, 'avgSalary' => '12-26 jt', 'growth' => '+45%', 'color' => '#ef4444', 'icon' => '🛡️'],
+    ['role' => 'Security Management Specialist',    'demand' => 80, 'avgSalary' => '9-20 jt',  'growth' => '+25%', 'color' => '#10b981', 'icon' => '📱'],
+    ['role' => 'Data Warehousing Specialist',               'demand' => 75, 'avgSalary' => '8-18 jt',  'growth' => '+22%', 'color' => '#f43f5e', 'icon' => '🎨'],
 ];
 
 $topCompanies = [
     ['name' => 'Gojek',           'roles' => 'Backend, ML, Data', 'badge' => 'Startup Unicorn',  'color' => '#00aa5b'],
     ['name' => 'Tokopedia',       'roles' => 'Full Stack, Data',  'badge' => 'E-commerce',        'color' => '#42b549'],
-    ['name' => 'Traveloka',       'roles' => 'Backend, DevOps',   'badge' => 'Travel Tech',       'color' => '#0080ff'],
-    ['name' => 'Bukalapak',       'roles' => 'Frontend, ML',      'badge' => 'Marketplace',       'color' => '#f42521'],
     ['name' => 'Shopee (Sea Ltd)','roles' => 'Backend, Data',     'badge' => 'Regional Unicorn',  'color' => '#f36628'],
     ['name' => 'Bank BCA Digital','roles' => 'Full Stack, Cloud', 'badge' => 'Fintech/Bank',      'color' => '#005baa'],
     ['name' => 'Telkom Indonesia','roles' => 'Network, Cloud',    'badge' => 'State-owned Tech',  'color' => '#e31e2d'],
