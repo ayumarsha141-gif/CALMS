@@ -5,7 +5,7 @@ require_once 'config/database.php';
 if (isset($_SESSION['user_id'])) {
     $role = $_SESSION['role'];
     if ($role === 'dosen') { header('Location: dashboard_dosen.php'); exit; }
-    if ($role === 'admin') { header('Location: dashboard_admin.php'); exit; }
+    if ($role === 'admin') { header('Location: dashboardAdmin.php'); exit; }
     header('Location: dashboard.php'); exit;
 }
 
@@ -36,14 +36,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error = 'Format email tidak valid.';
     } else {
-        // Cek admin
         foreach ($ADMIN_ACCOUNTS as $admin) {
-            if ($admin['email'] === $email && $admin['password'] === $password) {
-                $_SESSION['user_id']  = 'admin_' . md5($email);
+
+            if (
+                $admin['email'] === $email &&
+                $admin['password'] === $password
+            ) {
+
+                session_regenerate_id(true);
+
+                $_SESSION['user_id']  = 'admin';
                 $_SESSION['fullname'] = $admin['name'];
                 $_SESSION['email']    = $email;
                 $_SESSION['role']     = 'admin';
-                header('Location: dashboard_admin.php');
+
+                header('Location: dashboardAdmin.php');
                 exit;
             }
         }
