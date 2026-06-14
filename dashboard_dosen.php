@@ -21,10 +21,20 @@ $avgReady = $db->query("
 ")->fetchColumn();
 $avgReady = $avgReady ? round($avgReady) : 0;
 
-// Mahasiswa dengan readiness tertinggi (top 5)
 $topStudents = $db->query("
-    SELECT u.fullname, mp.nim, mp.target_career, mp.semester,
-           ROUND(AVG(ss.student_level / s.industry_level * 100)) AS readiness
+    SELECT
+        u.fullname,
+        mp.nim,
+        mp.target_career,
+        mp.semester,
+        ROUND(
+            AVG(
+                LEAST(
+                    (ss.student_level / s.industry_level) * 100,
+                    100
+                )
+            )
+        ) AS readiness
     FROM student_skills ss
     JOIN skills s ON s.id = ss.skill_id
     JOIN mahasiswa_profiles mp ON mp.id = ss.student_id
@@ -36,8 +46,19 @@ $topStudents = $db->query("
 
 // Mahasiswa dengan readiness terendah (perlu perhatian)
 $lowStudents = $db->query("
-    SELECT u.fullname, mp.nim, mp.target_career, mp.semester,
-           ROUND(AVG(ss.student_level / s.industry_level * 100)) AS readiness
+    SELECT
+        u.fullname,
+        mp.nim,
+        mp.target_career,
+        mp.semester,
+        ROUND(
+            AVG(
+                LEAST(
+                    (ss.student_level / s.industry_level) * 100,
+                    100
+                )
+            )
+        ) AS readiness
     FROM student_skills ss
     JOIN skills s ON s.id = ss.skill_id
     JOIN mahasiswa_profiles mp ON mp.id = ss.student_id
@@ -71,9 +92,12 @@ $weakSkills = $db->query("
 
 // Simulasi terakhir per mahasiswa (ringkasan)
 $simSummary = $db->query("
-    SELECT u.fullname, mp.nim, sim.target_role, sim.target_company,
-           ROUND(sim.probability_score * 100) AS prob,
-           sim.created_at
+    SELECT
+        u.fullname,
+        mp.nim,
+        mp.target_career,
+        ROUND(sim.probability_score * 100) AS prob,
+        sim.created_at
     FROM simulations sim
     JOIN mahasiswa_profiles mp ON mp.id = sim.student_id
     JOIN users u ON u.id = mp.user_id
@@ -350,8 +374,7 @@ $activePageDosen = 'dashboard';
                     <thead>
                         <tr>
                             <th>Mahasiswa</th>
-                            <th>Target Role</th>
-                            <th>Perusahaan</th>
+                            <th>Target Karir</th>
                             <th>Peluang</th>
                             <th>Tanggal</th>
                         </tr>
@@ -363,8 +386,7 @@ $activePageDosen = 'dashboard';
                                 <div style="font-weight:500;color:var(--text-primary);"><?= htmlspecialchars($sim['fullname']) ?></div>
                                 <div style="font-size:11px;font-family:var(--font-mono);color:var(--text-muted);"><?= htmlspecialchars($sim['nim']) ?></div>
                             </td>
-                            <td><?= htmlspecialchars($sim['target_role'] ?: '-') ?></td>
-                            <td><?= htmlspecialchars($sim['target_company'] ?: '-') ?></td>
+                            <td><?= htmlspecialchars($sim['target_career'] ?: '-') ?></td>
                             <td>
                                 <?php
                                 $p = $sim['prob'];

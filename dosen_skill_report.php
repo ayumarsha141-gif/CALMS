@@ -7,16 +7,37 @@ requireDosen();
 $dosenUser = getDosenUser();
 $db = getDB();
 
-// Skill dengan gap rata-rata per kategori
 $skillReport = $db->query("
-    SELECT s.skill_name, s.category, s.industry_level,
-           ROUND(AVG(ss.student_level), 1) AS avg_student,
-           ROUND(AVG(s.industry_level - ss.student_level), 1) AS avg_gap,
-           COUNT(ss.id) AS student_count,
-           SUM(CASE WHEN ss.student_level >= s.industry_level THEN 1 ELSE 0 END) AS meet_standard
+    SELECT
+        s.skill_name,
+        s.category,
+        s.industry_level,
+
+        ROUND(AVG(ss.student_level),1) AS avg_student,
+
+        ROUND(
+            AVG(
+                s.industry_level - COALESCE(ss.student_level,0)
+            ),1
+        ) AS avg_gap,
+
+        COUNT(ss.id) AS student_count,
+
+        SUM(
+            CASE
+                WHEN ss.student_level >= s.industry_level
+                THEN 1
+                ELSE 0
+            END
+        ) AS meet_standard
+
     FROM skills s
-    LEFT JOIN student_skills ss ON ss.skill_id = s.id
+
+    LEFT JOIN student_skills ss
+        ON ss.skill_id = s.id
+
     GROUP BY s.id
+
     ORDER BY avg_gap DESC
 ")->fetchAll();
 
@@ -83,7 +104,7 @@ $activePageDosen = 'skill_report';
             </div>
             <div class="stat-body">
                 <span class="stat-label">Skill Gap Rendah (≤2)</span>
-                <span class="stat-value value--green"><?= count(array_filter($skillReport, fn($s) => $s['avg_gap'] <= 2)) ?></span>
+                <span class="stat-value value--green"><?= count(array_filter($skillReport, fn($s) => $s['avg_gap'] <= 1)) ?></span>
             </div>
         </div>
         <div class="stat-card">
@@ -92,7 +113,7 @@ $activePageDosen = 'skill_report';
             </div>
             <div class="stat-body">
                 <span class="stat-label">Skill Gap Tinggi (>4)</span>
-                <span class="stat-value value--red"><?= count(array_filter($skillReport, fn($s) => $s['avg_gap'] > 4)) ?></span>
+                <span class="stat-value value--red"><?= count(array_filter($skillReport, fn($s) => $s['avg_gap'] > 3)) ?></span>
             </div>
         </div>
     </div>

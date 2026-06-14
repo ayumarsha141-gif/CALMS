@@ -9,11 +9,15 @@ $db = getDB();
 
 // Semua simulasi dengan info mahasiswa
 $simulations = $db->query("
-    SELECT u.fullname, mp.nim, mp.semester, mp.target_career,
-           sim.target_role, sim.target_company,
-           sim.ipk_score, sim.skill_score, sim.cert_score, sim.portfolio_score,
-           ROUND(sim.probability_score * 100) AS prob,
-           sim.iterations, sim.created_at
+SELECT
+       u.fullname,
+       mp.nim,
+       mp.target_career,
+       sim.skill_score,
+       sim.cert_score,
+       sim.portfolio_score,
+       ROUND(sim.probability_score * 100) AS prob,
+       sim.created_at
     FROM simulations sim
     JOIN mahasiswa_profiles mp ON mp.id = sim.student_id
     JOIN users u ON u.id = mp.user_id
@@ -128,11 +132,9 @@ $activePageDosen = 'simulation_report';
             <thead>
                 <tr>
                     <th>Mahasiswa</th>
-                    <th>Target Role</th>
-                    <th>Perusahaan</th>
-                    <th>IPK</th>
+                    <th>Target Karir</th>
                     <th>Skill</th>
-                    <th>Sertif.</th>
+                    <th>Sertifikasi</th>
                     <th>Portofolio</th>
                     <th>Peluang</th>
                     <th>Tanggal</th>
@@ -148,12 +150,21 @@ $activePageDosen = 'simulation_report';
                         <div style="font-weight:600;color:var(--text-primary)"><?= htmlspecialchars($sim['fullname']) ?></div>
                         <div style="font-size:11px;font-family:var(--font-mono);color:var(--text-muted)"><?= htmlspecialchars($sim['nim']) ?></div>
                     </td>
-                    <td><?= htmlspecialchars($sim['target_role'] ?: '-') ?></td>
-                    <td><?= htmlspecialchars($sim['target_company'] ?: '-') ?></td>
-                    <td class="score-mini"><?= round($sim['ipk_score']) ?>%</td>
-                    <td class="score-mini"><?= round($sim['skill_score']) ?>%</td>
-                    <td class="score-mini"><?= round($sim['cert_score']) ?>%</td>
-                    <td class="score-mini"><?= round($sim['portfolio_score']) ?>%</td>
+                    <td>
+                        <?= htmlspecialchars($sim['target_career'] ?: '-') ?>
+                    </td>
+
+                    <td class="score-mini">
+                        <?= round($sim['skill_score']) ?>%
+                    </td>
+
+                    <td class="score-mini">
+                        <?= round($sim['cert_score']) ?>%
+                    </td>
+
+                    <td class="score-mini">
+                        <?= round($sim['portfolio_score']) ?>%
+                    </td>  
                     <td><span class="prob-pill <?= $pc ?>"><?= $p ?>%</span></td>
                     <td style="font-size:11px;color:var(--text-muted)"><?= date('d M Y', strtotime($sim['created_at'])) ?></td>
                 </tr>

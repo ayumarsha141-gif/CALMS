@@ -7,7 +7,6 @@ requireRole('admin');
 $user = getCurrentUser();
 $db   = getDB();
 
-// Stat: Total Users
 $stmt = $db->query("SELECT COUNT(*) FROM users WHERE is_active = 1");
 $totalUsers = $stmt->fetchColumn();
 
@@ -17,14 +16,12 @@ $totalMahasiswa = $stmt->fetchColumn();
 $stmt = $db->query("SELECT COUNT(*) FROM users WHERE role = 'dosen' AND is_active = 1");
 $totalDosen = $stmt->fetchColumn();
 
-// Stat: Simulasi & Rata-rata Readiness 
 $stmt = $db->query("SELECT COUNT(*) FROM simulations");
 $totalSimulations = $stmt->fetchColumn();
 
 $stmt = $db->query("SELECT AVG(probability_score) FROM simulations");
 $avgProb = round(($stmt->fetchColumn() ?? 0) * 100);
 
-// Stat: Skill gap rata-rata sistem
 $stmt = $db->query("
     SELECT AVG(s.industry_level - ss.student_level) AS avg_gap
     FROM student_skills ss
@@ -32,10 +29,8 @@ $stmt = $db->query("
 ");
 $avgGap = round($stmt->fetchColumn() ?? 0, 1);
 
-//  Tabel: 5 mahasiswa terbaru 
 $stmt = $db->query("
-    SELECT u.fullname, u.email, mp.nim, mp.semester, mp.target_career,
-           u.created_at
+    SELECT u.fullname, u.email, mp.nim, mp.semester, mp.target_career, u.created_at
     FROM users u
     JOIN mahasiswa_profiles mp ON mp.user_id = u.id
     WHERE u.role = 'mahasiswa' AND u.is_active = 1
@@ -44,7 +39,6 @@ $stmt = $db->query("
 ");
 $recentStudents = $stmt->fetchAll();
 
-//  Top 5 mahasiswa by readiness 
 $stmt = $db->query("
     SELECT u.fullname, mp.nim, mp.target_career,
            ROUND(AVG((ss.student_level / s.industry_level) * 100)) AS readiness
@@ -58,7 +52,6 @@ $stmt = $db->query("
 ");
 $topStudents = $stmt->fetchAll();
 
-//  Distribusi target karir 
 $stmt = $db->query("
     SELECT target_career, COUNT(*) AS total
     FROM mahasiswa_profiles
@@ -69,9 +62,8 @@ $stmt = $db->query("
 ");
 $careerDist = $stmt->fetchAll();
 
-//  Simulasi terbaru (5 data) 
 $stmt = $db->query("
-    SELECT u.fullname, mp.nim, si.target_role, si.target_company,
+    SELECT u.fullname, mp.nim, si.target_role,
            si.probability_score, si.created_at
     FROM simulations si
     JOIN mahasiswa_profiles mp ON mp.id = si.student_id
@@ -81,16 +73,6 @@ $stmt = $db->query("
 ");
 $recentSims = $stmt->fetchAll();
 
-//  Industry trends terbaru 
-$stmt = $db->query("
-    SELECT title, category, source, trend_date
-    FROM industry_trends
-    ORDER BY trend_date DESC
-    LIMIT 4
-");
-$trends = $stmt->fetchAll();
-
-// Helper functions
 function readinessClass(int $score): string {
     if ($score >= 70) return 'value--green';
     if ($score >= 40) return 'value--amber';
@@ -101,16 +83,13 @@ function probClass(int $score): string {
     if ($score >= 40) return 'sim-prob--amber';
     return 'sim-prob--red';
 }
-function probLabel(int $score): string {
-    if ($score >= 70) return 'Tinggi';
-    if ($score >= 40) return 'Sedang';
-    return 'Rendah';
-}
 function gapBadgeClass(float $gap): string {
     if ($gap <= 1) return 'gap-low';
     if ($gap <= 3) return 'gap-mid';
     return 'gap-high';
 }
+
+$activePage = 'admin_dashboard';
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -120,9 +99,102 @@ function gapBadgeClass(float $gap): string {
     <title>Admin Dashboard — CALMS</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="style_patch.css">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        /* ── Tambahan khusus admin ── */
+        /* ── Pastikan main-content full width & padding konsisten ── */
+        .main-content {
+            margin-left: 260px;
+            padding: 32px 32px 48px;
+            min-height: 100vh;
+            box-sizing: border-box;
+            width: calc(100% - 260px);
+        }
+        @media (max-width: 768px) {
+            .main-content { margin-left: 0; width: 100%; padding: 20px 16px 40px; }
+        }
+
+        /* ── Stat grid: 4 kolom rata ── */
+        .stat-grid-admin {
+            display: grid;
+            grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+        @media (max-width: 1100px) { .stat-grid-admin { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 560px)  { .stat-grid-admin { grid-template-columns: 1fr; } }
+
+        .stat-card-adm {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 22px 20px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: border-color .2s, transform .2s;
+        }
+        .stat-card-adm:hover { border-color: var(--border-hover); transform: translateY(-2px); }
+
+        .stat-card-adm .icon {
+            width: 36px; height: 36px;
+            border-radius: 9px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        .stat-card-adm .lbl {
+            font-size: 11px;
+            color: var(--text-muted);
+            letter-spacing: .04em;
+            text-transform: uppercase;
+        }
+        .stat-card-adm .val {
+            font-size: 32px;
+            font-weight: 700;
+            font-family: var(--font-mono);
+            line-height: 1;
+        }
+        .stat-card-adm .bar-track {
+            height: 4px;
+            background: rgba(255,255,255,.06);
+            border-radius: 999px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+        .stat-card-adm .bar-fill {
+            height: 100%;
+            border-radius: 999px;
+            transition: width 1s ease;
+        }
+
+        .admin-grid {
+            display: grid;
+            grid-template-columns: minmax(0,2fr) minmax(0,1fr);
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .admin-grid > .dash-panel {
+            min-width: 0;
+        }
+
+        .admin-grid > .dash-panel{
+            width:100%;
+            box-sizing:border-box;
+        }
+
+        .admin-grid-3 {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        @media (max-width: 1100px) {
+            .admin-grid, .admin-grid-3 { grid-template-columns: 1fr; }
+        }
+
+        /* ── Tables ── */
         .admin-table {
             width: 100%;
             border-collapse: collapse;
@@ -132,10 +204,11 @@ function gapBadgeClass(float $gap): string {
             text-align: left;
             padding: 8px 12px;
             font-size: 11px;
-            letter-spacing: 0.8px;
+            letter-spacing: .8px;
             text-transform: uppercase;
             color: var(--text-muted);
             border-bottom: 1px solid var(--border);
+            white-space: normal;
         }
         .admin-table td {
             padding: 11px 12px;
@@ -144,7 +217,7 @@ function gapBadgeClass(float $gap): string {
             vertical-align: middle;
         }
         .admin-table tr:last-child td { border-bottom: none; }
-        .admin-table tr:hover td { background: rgba(255,255,255,0.02); }
+        .admin-table tr:hover td { background: rgba(255,255,255,.02); }
         .td-name { color: var(--text-primary) !important; font-weight: 600; }
         .td-mono { font-family: var(--font-mono); font-size: 12px; }
 
@@ -152,38 +225,25 @@ function gapBadgeClass(float $gap): string {
             font-size: 11px;
             padding: 3px 10px;
             border-radius: 999px;
-            background: rgba(34,211,238,0.08);
-            border: 1px solid rgba(34,211,238,0.15);
+            background: rgba(34,211,238,.08);
+            border: 1px solid rgba(34,211,238,.15);
             color: var(--cyan);
             white-space: nowrap;
-        }
-
-        .dist-row {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            margin-bottom: 12px;
-        }
-        .dist-meta {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-        }
-        .dist-meta span:first-child { color: var(--text-primary); font-weight: 500; }
-        .dist-meta span:last-child  { color: var(--text-muted); font-family: var(--font-mono); }
-        .dist-bar {
-            height: 6px;
-            background: var(--border);
-            border-radius: 999px;
+            max-width: 180px;
             overflow: hidden;
-        }
-        .dist-bar-fill {
-            height: 100%;
-            background: #22d3ee;
-            border-radius: 999px;
-            transition: width 1s ease;
+            text-overflow: ellipsis;
+            display: inline-block;
         }
 
+        /* ── Distribusi karir ── */
+        .dist-row { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
+        .dist-meta { display: flex; justify-content: space-between; font-size: 12px; gap: 8px; }
+        .dist-meta span:first-child { color: var(--text-primary); font-weight: 500; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .dist-meta span:last-child  { color: var(--text-muted); font-family: var(--font-mono); flex-shrink: 0; }
+        .dist-bar { height: 6px; background: var(--border); border-radius: 999px; overflow: hidden; }
+        .dist-bar-fill { height: 100%; background: #22d3ee; border-radius: 999px; transition: width 1s ease; }
+
+        /* ── Trend items ── */
         .trend-item {
             display: flex;
             align-items: flex-start;
@@ -196,250 +256,162 @@ function gapBadgeClass(float $gap): string {
             font-size: 10px;
             padding: 3px 8px;
             border-radius: 999px;
-            background: rgba(167,139,250,0.1);
+            background: rgba(167,139,250,.1);
             color: #a78bfa;
-            border: 1px solid rgba(167,139,250,0.2);
+            border: 1px solid rgba(167,139,250,.2);
             white-space: nowrap;
             flex-shrink: 0;
             margin-top: 2px;
         }
-        .trend-info strong {
-            display: block;
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-primary);
-            line-height: 1.4;
+        .trend-info strong { display: block; font-size: 13px; font-weight: 600; color: var(--text-primary); line-height: 1.4; }
+        .trend-info span   { font-size: 11px; color: var(--text-muted); }
+
+        /* ── Rank badge ── */
+        .rank-badge {
+            width: 26px; height: 26px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 12px; font-weight: 700;
         }
-        .trend-info span {
-            font-size: 11px;
-            color: var(--text-muted);
+        .rank-1 { background: rgba(250,204,21,.2); color: #facc15; }
+        .rank-2 { background: rgba(148,163,184,.2); color: #94a3b8; }
+        .rank-3 { background: rgba(180,120,80,.2);  color: #b47850; }
+        .rank-n { background: rgba(255,255,255,.05); color: var(--text-muted); }
+
+        .empty-box { text-align: center; padding: 32px; color: var(--text-muted); font-size: 13px; }
+   
+        .top-career-table{
+            table-layout: fixed;
+            width:100%;
         }
 
-        .stat-grid-5 {
-            grid-template-columns: repeat(5, 1fr);
+        .top-career-table th,
+        .top-career-table td{
+            overflow:hidden;
+            text-overflow:ellipsis;
         }
-        @media (max-width: 1400px) { .stat-grid-5 { grid-template-columns: repeat(3, 1fr); } }
-        @media (max-width: 900px)  { .stat-grid-5 { grid-template-columns: repeat(2, 1fr); } }
-        @media (max-width: 480px)  { .stat-grid-5 { grid-template-columns: 1fr; } }
-
-        .admin-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-        .admin-grid-3 {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 20px;
-        }
-        @media (max-width: 1100px) {
-            .admin-grid, .admin-grid-3 { grid-template-columns: 1fr; }
-        }
-    </style>
+   </style>
 </head>
-<body class="dashboard-body">
+<body class="dashboard-body admin-body">
 
-<!-- SIDEBAR
-<aside class="sidebar" id="sidebar">
-    <div class="sidebar-brand">
-        <span class="logo-text">CALMS</span><span class="logo-dot">.</span>
-    </div>
+<?php include 'includes/sidebar_admin.php'; ?>
 
-    <div class="sidebar-user">
-        <div class="user-avatar"><?= strtoupper(substr($user['fullname'], 0, 2)) ?></div>
-        <div class="user-info">
-            <strong><?= htmlspecialchars(explode(' ', $user['fullname'])[0]) ?></strong>
-            <span>Administrator</span>
-        </div>
-    </div>
-
-    <nav class="sidebar-nav">
-        <div class="nav-group-label">Menu Admin</div>
-        <a href="dashboard.php" class="active">
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-            Dashboard
-        </a>
-        <a href="users.php">
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-            User Management
-        </a>
-        <a href="industry_trends.php">
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-            Industry Trends
-        </a>
-        <a href="certifications.php">
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M9 12l2 2 4-4"/></svg>
-            Sertifikasi
-        </a>
-        <a href="labs.php">
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"/></svg>
-            Lab Management
-        </a>
-        <a href="courses.php">
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-            Courses
-        </a>
-
-        <div class="nav-group-label nav-group-label--mt">Laporan</div>
-        <a href="reports.php">
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-            Career Reports
-        </a>
-        <a href="simulations.php">
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            Simulation Logs
-        </a>
-
-        <div class="nav-group-label nav-group-label--mt">Akun</div>
-        <a href="../logout.php" class="nav-logout">
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-            Keluar
-        </a>
-    </nav>
-</aside>
-
-<!-- ══════════════════════════════════════════
-     MAIN CONTENT
-══════════════════════════════════════════ -->
 <main class="main-content">
 
     <!-- Topbar -->
     <div class="topbar">
         <div class="topbar-left">
-            <button class="sidebar-toggle" id="sidebarToggle">
-                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <line x1="3" y1="6" x2="21" y2="6"/>
+                    <line x1="3" y1="12" x2="21" y2="12"/>
+                    <line x1="3" y1="18" x2="21" y2="18"/>
+                </svg>
             </button>
             <div>
-                <div class="page-title">Admin Dashboard</div>
-                <div class="page-sub">Selamat datang, <?= htmlspecialchars(explode(' ', $user['fullname'])[0]) ?> — pantau seluruh sistem CALMS</div>
+                <h1 class="page-title">Admin Dashboard</h1>
+                <p class="page-sub">Selamat datang, <?= htmlspecialchars(explode(' ', $user['fullname'])[0]) ?> — pantau seluruh sistem CALMS</p>
             </div>
         </div>
         <div class="topbar-right">
-            <span class="semester-badge">
-                <?= date('d M Y') ?>
-            </span>
-            <span class="career-badge">&#128274; Admin Access</span>
+            <span class="semester-badge"><?= date('d M Y') ?></span>
+            <span class="career-badge">🔒 Admin</span>
         </div>
     </div>
 
-    <!-- ── Stat Cards ── -->
-    <div class="stat-grid stat-grid-5">
+    <!-- ── Stat Cards: 4 kolom (hapus Mahasiswa Aktif) ── -->
+    <div class="stat-grid-admin">
 
-        <div class="stat-card">
-            <div class="stat-icon stat-icon--cyan">
-                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <div class="stat-card-adm">
+            <div class="icon" style="background:rgba(34,211,238,.1)">
+                <svg width="18" height="18" fill="none" stroke="#22d3ee" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
             </div>
-            <div class="stat-body">
-                <span class="stat-label">Total Pengguna</span>
-                <span class="stat-value value--cyan"><?= $totalUsers ?></span>
+            <div>
+                <div class="lbl">Total Pengguna</div>
+                <div class="val" style="color:#22d3ee"><?= $totalUsers ?></div>
             </div>
-            <div class="stat-bar">
-                <div class="stat-bar-fill stat-bar-fill--cyan" data-width="100"></div>
-            </div>
+            <div class="bar-track"><div class="bar-fill" style="background:#22d3ee" data-width="100"></div></div>
         </div>
 
-        <div class="stat-card">
-            <div class="stat-icon stat-icon--blue">
-                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <div class="stat-card-adm">
+            <div class="icon" style="background:rgba(167,139,250,.1)">
+                <svg width="18" height="18" fill="none" stroke="#a78bfa" stroke-width="2" viewBox="0 0 24 24">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                </svg>
             </div>
-            <div class="stat-body">
-                <span class="stat-label">Mahasiswa Aktif</span>
-                <span class="stat-value value--blue"><?= $totalMahasiswa ?></span>
+            <div>
+                <div class="lbl">Total Simulasi</div>
+                <div class="val" style="color:#a78bfa"><?= $totalSimulations ?></div>
             </div>
-            <div class="stat-bar">
-                <?php $mPct = $totalUsers > 0 ? round(($totalMahasiswa / $totalUsers) * 100) : 0; ?>
-                <div class="stat-bar-fill stat-bar-fill--blue" data-width="<?= $mPct ?>"></div>
-            </div>
+            <div class="bar-track"><div class="bar-fill" style="background:#a78bfa" data-width="<?= min($totalSimulations * 5, 100) ?>"></div></div>
         </div>
 
-        <div class="stat-card">
-            <div class="stat-icon stat-icon--green">
-                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.45 2 2 0 0 1 3.58 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 6 6l.92-.92a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        <div class="stat-card-adm">
+            <div class="icon" style="background:rgba(245,158,11,.1)">
+                <svg width="18" height="18" fill="none" stroke="#f59e0b" stroke-width="2" viewBox="0 0 24 24">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                </svg>
             </div>
-            <div class="stat-body">
-                <span class="stat-label">Dosen Terdaftar</span>
-                <span class="stat-value value--green"><?= $totalDosen ?></span>
+            <div>
+                <div class="lbl">Avg Prob. Rekrutmen</div>
+                <div class="val" style="color:<?= $avgProb >= 70 ? '#10b981' : ($avgProb >= 40 ? '#f59e0b' : '#ef4444') ?>"><?= $avgProb ?>%</div>
             </div>
-        </div>
-
-        <div class="stat-card">
-            <div class="stat-icon stat-icon--purple">
-                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            </div>
-            <div class="stat-body">
-                <span class="stat-label">Total Simulasi</span>
-                <span class="stat-value value--purple"><?= $totalSimulations ?></span>
-            </div>
-            <div class="stat-bar">
-                <div class="stat-bar-fill" style="background:#a78bfa" data-width="<?= min($totalSimulations, 100) ?>"></div>
-            </div>
-        </div>
-
-        <div class="stat-card">
-            <div class="stat-icon" style="background:rgba(245,158,11,0.1);color:#f59e0b;">
-                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-            </div>
-            <div class="stat-body">
-                <span class="stat-label">Avg Prob. Rekrutmen</span>
-                <span class="stat-value <?= readinessClass($avgProb) ?>"><?= $avgProb ?>%</span>
-            </div>
-            <div class="stat-bar">
-                <div class="stat-bar-fill" style="background:#f59e0b" data-width="<?= $avgProb ?>"></div>
-            </div>
+            <div class="bar-track"><div class="bar-fill" style="background:#f59e0b" data-width="<?= $avgProb ?>"></div></div>
         </div>
 
     </div>
 
-    <!--  Row 1: Mahasiswa Terbaru + Top Readiness  -->
+    <!-- ── Row 1: Mahasiswa Terbaru + Top Readiness ── -->
     <div class="admin-grid">
 
-        <!-- Mahasiswa Terbaru -->
         <div class="dash-panel">
             <div class="panel-header">
                 <div>
                     <h2 class="panel-title">Mahasiswa Terbaru</h2>
                     <p class="panel-sub">5 akun mahasiswa yang baru mendaftar</p>
                 </div>
-                <a href="users.php" class="panel-link">Semua User →</a>
+                <a href="admin_master.php?tab=career" class="panel-link">Semua →</a>
             </div>
             <?php if (!empty($recentStudents)): ?>
-            <table class="admin-table">
+            <table class="admin-table readiness-table">
                 <thead>
                     <tr>
                         <th>Nama</th>
                         <th>NIM</th>
-                        <th>Semester</th>
+                        <th>Sem</th>
                         <th>Target Karir</th>
                         <th>Bergabung</th>
                     </tr>
                 </thead>
                 <tbody>
                 <?php foreach ($recentStudents as $s): ?>
-                    <tr>
-                        <td class="td-name"><?= htmlspecialchars($s['fullname']) ?></td>
-                        <td class="td-mono"><?= htmlspecialchars($s['nim']) ?></td>
-                        <td style="text-align:center"><?= $s['semester'] ?></td>
-                        <td>
-                            <?php if ($s['target_career']): ?>
-                                <span class="career-pill"><?= htmlspecialchars($s['target_career']) ?></span>
-                            <?php else: ?>
-                                <span style="color:var(--text-muted);font-size:12px">—</span>
-                            <?php endif; ?>
-                        </td>
-                        <td style="color:var(--text-muted);font-size:12px">
-                            <?= date('d M Y', strtotime($s['created_at'])) ?>
-                        </td>
-                    </tr>
+                <tr>
+                    <td class="td-name"><?= htmlspecialchars($s['fullname']) ?></td>
+                    <td class="td-mono"><?= htmlspecialchars($s['nim']) ?></td>
+                    <td style="text-align:center"><?= $s['semester'] ?></td>
+                    <td>
+                        <?php if ($s['target_career']): ?>
+                            <span class="career-pill"><?= htmlspecialchars($s['target_career']) ?></span>
+                        <?php else: ?>
+                            <span style="color:var(--text-muted);font-size:12px">—</span>
+                        <?php endif; ?>
+                    </td>
+                    <td style="color:var(--text-muted);font-size:12px;white-space:nowrap">
+                        <?= date('d M Y', strtotime($s['created_at'])) ?>
+                    </td>
+                </tr>
                 <?php endforeach; ?>
                 </tbody>
             </table>
             <?php else: ?>
-            <div class="empty-state"><p>Belum ada mahasiswa terdaftar.</p></div>
+            <div class="empty-box">Belum ada mahasiswa terdaftar.</div>
             <?php endif; ?>
         </div>
 
-        <!-- Top Readiness -->
         <div class="dash-panel">
             <div class="panel-header">
                 <div>
@@ -448,10 +420,9 @@ function gapBadgeClass(float $gap): string {
                 </div>
             </div>
             <?php if (!empty($topStudents)): ?>
-            <table class="admin-table">
+            <table class="admin-table top-career-table">
                 <thead>
                     <tr>
-                        <th>#</th>
                         <th>Nama</th>
                         <th>NIM</th>
                         <th>Readiness</th>
@@ -459,41 +430,34 @@ function gapBadgeClass(float $gap): string {
                 </thead>
                 <tbody>
                 <?php foreach ($topStudents as $i => $ts): ?>
-                    <tr>
-                        <td>
-                            <div class="cert-rank <?= $i < 3 ? 'rank-'.($i+1) : '' ?>" style="<?= $i >= 3 ? 'background:rgba(255,255,255,0.05);color:var(--text-muted)' : '' ?>">
-                                <?= $i+1 ?>
-                            </div>
-                        </td>
-                        <td class="td-name"><?= htmlspecialchars(explode(' ', $ts['fullname'])[0]) ?></td>
-                        <td class="td-mono"><?= htmlspecialchars($ts['nim']) ?></td>
-                        <td>
-                            <span class="stat-value <?= readinessClass((int)$ts['readiness']) ?>" style="font-size:16px">
-                                <?= $ts['readiness'] ?>%
-                            </span>
-                        </td>
-                    </tr>
+                <tr>
+                    <td class="td-name"><?= htmlspecialchars($ts['fullname'])?></td>
+                    <td class="td-mono"><?= htmlspecialchars($ts['nim']) ?></td>
+                    <td>
+                        <span style="font-weight:700;font-family:var(--font-mono);font-size:15px;color:<?= (int)$ts['readiness'] >= 70 ? '#10b981' : ((int)$ts['readiness'] >= 40 ? '#f59e0b' : '#ef4444') ?>">
+                            <?= $ts['readiness'] ?>%
+                        </span>
+                    </td>
+                </tr>
                 <?php endforeach; ?>
                 </tbody>
             </table>
             <?php else: ?>
-            <div class="empty-state"><p>Data skill belum tersedia.</p></div>
+            <div class="empty-box">Data skill belum tersedia.</div>
             <?php endif; ?>
         </div>
 
     </div>
 
-    <!--  Row 2: Simulasi Terbaru + Distribusi Karir + Trends  -->
+    <!-- ── Row 2: Simulasi Terbaru + Distribusi Karir ── -->
     <div class="admin-grid">
 
-        <!-- Simulasi Terbaru -->
         <div class="dash-panel">
             <div class="panel-header">
                 <div>
                     <h2 class="panel-title">Simulasi Rekrutmen Terbaru</h2>
-                    <p class="panel-sub">5 simulasi Monte Carlo terakhir</p>
+                    <p class="panel-sub">5 simulasi terakhir yang dijalankan</p>
                 </div>
-                <a href="simulations.php" class="panel-link">Semua →</a>
             </div>
             <?php if (!empty($recentSims)): ?>
             <table class="admin-table">
@@ -501,7 +465,6 @@ function gapBadgeClass(float $gap): string {
                     <tr>
                         <th>Mahasiswa</th>
                         <th>Target Role</th>
-                        <th>Perusahaan</th>
                         <th>Probabilitas</th>
                         <th>Tanggal</th>
                     </tr>
@@ -510,31 +473,31 @@ function gapBadgeClass(float $gap): string {
                 <?php foreach ($recentSims as $sim):
                     $prob = round($sim['probability_score'] * 100);
                 ?>
-                    <tr>
-                        <td>
-                            <div class="td-name"><?= htmlspecialchars(explode(' ', $sim['fullname'])[0]) ?></div>
-                            <div class="td-mono" style="color:var(--text-muted)"><?= htmlspecialchars($sim['nim']) ?></div>
-                        </td>
-                        <td><?= htmlspecialchars($sim['target_role'] ?? '—') ?></td>
-                        <td style="color:var(--text-muted)"><?= htmlspecialchars($sim['target_company'] ?? '—') ?></td>
-                        <td>
-                            <span class="<?= probClass($prob) ?>" style="font-weight:700;font-family:var(--font-mono)">
-                                <?= $prob ?>%
-                            </span>
-                        </td>
-                        <td style="color:var(--text-muted);font-size:12px">
-                            <?= date('d M Y', strtotime($sim['created_at'])) ?>
-                        </td>
-                    </tr>
+                <tr>
+                    <td>
+                        <div class="td-name"><?= htmlspecialchars(explode(' ', $sim['fullname'])[0]) ?></div>
+                        <div class="td-mono" style="color:var(--text-muted)"><?= htmlspecialchars($sim['nim']) ?></div>
+                    </td>
+                    <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+                        <?= htmlspecialchars($sim['target_role'] ?? '—') ?>
+                    </td>
+                    <td>
+                        <span style="font-weight:700;font-family:var(--font-mono);color:<?= $prob >= 70 ? '#10b981' : ($prob >= 40 ? '#f59e0b' : '#ef4444') ?>">
+                            <?= $prob ?>%
+                        </span>
+                    </td>
+                    <td style="color:var(--text-muted);font-size:12px;white-space:nowrap">
+                        <?= date('d M Y', strtotime($sim['created_at'])) ?>
+                    </td>
+                </tr>
                 <?php endforeach; ?>
                 </tbody>
             </table>
             <?php else: ?>
-            <div class="empty-state"><p>Belum ada simulasi berjalan.</p></div>
+            <div class="empty-box">Belum ada simulasi berjalan.</div>
             <?php endif; ?>
         </div>
 
-        <!-- Distribusi Karir -->
         <div class="dash-panel">
             <div class="panel-header">
                 <div>
@@ -545,57 +508,27 @@ function gapBadgeClass(float $gap): string {
             <?php if (!empty($careerDist)):
                 $maxCareer = max(array_column($careerDist, 'total'));
             ?>
-                <?php foreach ($careerDist as $cd):
-                    $pct = $maxCareer > 0 ? round(($cd['total'] / $maxCareer) * 100) : 0;
-                ?>
-                <div class="dist-row">
-                    <div class="dist-meta">
-                        <span><?= htmlspecialchars($cd['target_career']) ?></span>
-                        <span><?= $cd['total'] ?> mhs</span>
-                    </div>
-                    <div class="dist-bar">
-                        <div class="dist-bar-fill" data-width="<?= $pct ?>"></div>
-                    </div>
+            <?php foreach ($careerDist as $cd):
+                $pct = $maxCareer > 0 ? round(($cd['total'] / $maxCareer) * 100) : 0;
+            ?>
+            <div class="dist-row">
+                <div class="dist-meta">
+                    <span><?= htmlspecialchars($cd['target_career']) ?></span>
+                    <span><?= $cd['total'] ?> mhs</span>
                 </div>
-                <?php endforeach; ?>
+                <div class="dist-bar">
+                    <div class="dist-bar-fill" data-width="<?= $pct ?>"></div>
+                </div>
+            </div>
+            <?php endforeach; ?>
             <?php else: ?>
-            <div class="empty-state"><p>Belum ada data target karir.</p></div>
+            <div class="empty-box">Belum ada data target karir.</div>
             <?php endif; ?>
         </div>
 
     </div>
 
-    <!-- ── Row 3: Industry Trends + Skill Gap System ── -->
-    <div class="admin-grid-3">
 
-        <!-- Recent Trends -->
-        <div class="dash-panel">
-            <div class="panel-header">
-                <div>
-                    <h2 class="panel-title">Industry Trends Terbaru</h2>
-                    <p class="panel-sub">Tren teknologi terkini yang diinput ke sistem</p>
-                </div>
-                <a href="industry_trends.php" class="panel-link">Kelola →</a>
-            </div>
-            <?php if (!empty($trends)): ?>
-                <?php foreach ($trends as $tr): ?>
-                <div class="trend-item">
-                    <span class="trend-cat"><?= htmlspecialchars($tr['category']) ?></span>
-                    <div class="trend-info">
-                        <strong><?= htmlspecialchars($tr['title']) ?></strong>
-                        <span>
-                            <?= htmlspecialchars($tr['source']) ?>
-                            &middot; <?= date('d M Y', strtotime($tr['trend_date'])) ?>
-                        </span>
-                    </div>
-                </div>
-                <?php endforeach; ?>
-            <?php else: ?>
-            <div class="empty-state"><p>Belum ada data trend.</p></div>
-            <?php endif; ?>
-        </div>
-
-        <!-- Skill Gap Sistem -->
         <div class="dash-panel">
             <div class="panel-header">
                 <div>
@@ -603,18 +536,19 @@ function gapBadgeClass(float $gap): string {
                     <p class="panel-sub">Selisih skill sistem secara global</p>
                 </div>
             </div>
-            <div style="text-align:center;padding:20px 0;">
-                <div class="sim-prob <?= $avgGap <= 1 ? 'sim-prob--green' : ($avgGap <= 3 ? 'sim-prob--amber' : 'sim-prob--red') ?>"
-                     style="font-size:48px;line-height:1;">
+            <div style="text-align:center;padding:28px 0 20px;">
+                <div style="font-size:56px;line-height:1;font-family:var(--font-mono);font-weight:700;color:<?= $avgGap <= 1 ? '#10b981' : ($avgGap <= 3 ? '#f59e0b' : '#ef4444') ?>">
                     <?= $avgGap ?>
                 </div>
-                <p style="font-size:13px;color:var(--text-muted);margin-top:8px">rata-rata gap poin (skala 1-10)</p>
-                <span class="gap-tag <?= gapBadgeClass($avgGap) ?>" style="margin-top:12px;display:inline-block">
+                <p style="font-size:13px;color:var(--text-muted);margin-top:10px">rata-rata gap poin (skala 1–10)</p>
+                <span style="display:inline-block;margin-top:14px;font-size:12px;padding:4px 14px;border-radius:999px;font-weight:600;
+                    background:<?= $avgGap <= 1 ? 'rgba(16,185,129,.15)' : ($avgGap <= 3 ? 'rgba(245,158,11,.15)' : 'rgba(239,68,68,.15)') ?>;
+                    color:<?= $avgGap <= 1 ? '#10b981' : ($avgGap <= 3 ? '#f59e0b' : '#ef4444') ?>">
                     Gap <?= $avgGap <= 1 ? 'Rendah' : ($avgGap <= 3 ? 'Sedang' : 'Tinggi') ?>
                 </span>
             </div>
-            <div style="padding-top:16px;border-top:1px solid var(--border);text-align:center">
-                <a href="reports.php" class="btn-sm-cyan">Lihat Laporan Lengkap →</a>
+            <div style="padding-top:16px;border-top:1px solid var(--border);text-align:center;">
+                <a href="admin_master.php" style="color:var(--cyan);font-size:13px;font-weight:600;">Lihat Master Data →</a>
             </div>
         </div>
 
@@ -623,17 +557,16 @@ function gapBadgeClass(float $gap): string {
 </main>
 
 <script>
-// Sidebar toggle
 const toggle  = document.getElementById('sidebarToggle');
 const sidebar = document.getElementById('sidebar');
-toggle?.addEventListener('click', () => sidebar.classList.toggle('open'));
+toggle?.addEventListener('click', () => sidebar?.classList.toggle('open'));
 
-// Animasi bar width
+// Animasi bar fill
 document.querySelectorAll('[data-width]').forEach(el => {
     el.style.width = '0%';
     setTimeout(() => {
-        el.style.width = el.dataset.width + '%';
-    }, 200);
+        el.style.width = (el.dataset.width ?? 0) + '%';
+    }, 300);
 });
 </script>
 
