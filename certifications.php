@@ -12,9 +12,6 @@ $stmt->execute([$user['id']]);
 $profile = $stmt->fetch();
 $studentId = $profile['id'];
 
-// ══════════════════════════════════
-// HANDLERS — Sertifikasi
-// ══════════════════════════════════
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Add cert
     if (isset($_POST['add_cert'])) {
@@ -40,9 +37,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // ══════════════════════════════════
-    // HANDLERS — Portofolio
-    // ══════════════════════════════════
     // Add project
     if (isset($_POST['add_project'])) {
         $name  = trim($_POST['project_name'] ?? '');

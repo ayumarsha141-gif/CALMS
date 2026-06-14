@@ -1,8 +1,3 @@
-/* ── PATCH: override style.css rules yang bentrok dengan dashboard.css ──
-   Tambahkan file ini SETELAH <link href="style.css"> dan <link href="dashboard.css">
-   di dashboard.php, ATAU copy-paste isi ini ke paling bawah style.css kamu ── */
-
-/* Fix stat-grid: paksa 3 kolom, bukan auto-fit */
 .dashboard-body .stat-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr) !important;
@@ -10,7 +5,6 @@
     margin-bottom: 24px;
 }
 
-/* Fix stat-card: tambah flex supaya konten rapi */
 .dashboard-body .stat-card {
     background: var(--bg-card);
     border: 1px solid var(--border);
@@ -23,8 +17,6 @@
     transition: var(--transition);
 }
 
-/* Fix main-content margin (style.css pakai 260px, dashboard.css 240px) */
-/* Hanya berlaku di layar lebar ≥ 1100px (sidebar visible) */
 @media (min-width: 1101px) {
     .dashboard-body .main-content,
     .main-content {
@@ -32,7 +24,6 @@
     }
 }
 
-/* Fix dashboard-grid: stretch biar kolom kanan setinggi kiri */
 .dashboard-body .dashboard-grid {
     display: grid;
     grid-template-columns: 1fr 360px;
@@ -40,7 +31,6 @@
     align-items: stretch !important;
 }
 
-/* Fix dash-right: flex column, tinggi penuh */
 .dashboard-body .dash-right {
     display: flex !important;
     flex-direction: column !important;
@@ -48,24 +38,20 @@
     height: 100%;
 }
 
-/* Career Readiness panel tumbuh mengisi sisa ruang */
 .dashboard-body .dash-right .dash-panel:first-child {
     flex: 1 !important;
 }
 
-/* Skill gap panel tinggi penuh */
 .dashboard-body .panel-wide {
     height: 100% !important;
     display: flex !important;
     flex-direction: column !important;
 }
 
-/* skill-gap-list mengisi ruang */
 .dashboard-body .skill-gap-list {
     flex: 1;
 }
 
-/* legend selalu di bawah */
 .dashboard-body .legend {
     margin-top: auto;
 }
@@ -91,13 +77,8 @@
     }
 }
 
-/* ══ GLOBAL NARROW / SPLIT-SCREEN FIX ══
-   Override margin-left dari style.css (.main-content { margin-left: 260px })
-   Berlaku untuk SEMUA halaman di semua lebar ≤ 1100px ── */
-
 @media (max-width: 1100px) {
 
-    /* Reset margin dari style.css yang pakai 260px */
     .main-content,
     .dashboard-body .main-content,
     body .main-content {
@@ -107,7 +88,6 @@
         box-sizing: border-box !important;
     }
 
-    /* Sidebar slide keluar */
     .sidebar,
     .dashboard-body .sidebar,
     body .sidebar {
@@ -123,12 +103,10 @@
         transform: translateX(0) !important;
     }
 
-    /* Tombol hamburger selalu muncul */
     .sidebar-toggle {
         display: flex !important;
     }
 
-    /* Topbar tidak overflow */
     .topbar {
         flex-wrap: wrap !important;
     }
@@ -136,7 +114,6 @@
         display: none !important;
     }
 
-    /* Grid fixes */
     .dashboard-body .stat-grid {
         grid-template-columns: repeat(2, 1fr) !important;
     }
@@ -156,7 +133,6 @@
         flex: unset !important;
     }
 
-    /* Skill gap 1 kolom */
     .sg-content {
         grid-template-columns: 1fr !important;
     }
@@ -164,7 +140,6 @@
         grid-template-columns: repeat(2, 1fr) !important;
     }
 
-    /* Admin grid */
     .admin-grid,
     .admin-grid-3 {
         grid-template-columns: 1fr !important;

@@ -1,6 +1,4 @@
 <?php
-// includes/sidebar_admin.php
-// Pastikan $user dan $activePage sudah didefinisikan di halaman yang meng-include file ini
 $_activePage = $activePage ?? '';
 ?>
 <aside class="sidebar" id="sidebar">
