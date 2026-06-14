@@ -218,6 +218,7 @@ $activePage = 'profile';
     <title>Profil — CALMS</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="style_patch.css">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         .profile-grid {
@@ -425,15 +426,22 @@ $activePage = 'profile';
         }
 
         .tier-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 52px;
+            height: 22px;
             font-size: 10px;
             font-weight: 700;
-            padding: 3px 8px;
+            padding: 0 8px;
             border-radius: 999px;
             flex-shrink: 0;
+            white-space: nowrap;
+            line-height: 1;
         }
-        .tier-1 { background: rgba(34,211,238,0.15); color: #22d3ee; }
-        .tier-2 { background: rgba(96,165,250,0.15);  color: #60a5fa; }
-        .tier-3 { background: rgba(148,163,184,0.12); color: #94a3b8; }
+        .tier-1 { background: rgba(34,211,238,0.15); color: #22d3ee; border: 1px solid rgba(34,211,238,0.3); }
+        .tier-2 { background: rgba(96,165,250,0.15);  color: #60a5fa; border: 1px solid rgba(96,165,250,0.3); }
+        .tier-3 { background: rgba(148,163,184,0.12); color: #94a3b8; border: 1px solid rgba(148,163,184,0.3); }
 
         .scale-badge {
             font-size: 10px;

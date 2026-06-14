@@ -134,16 +134,16 @@ $staticRoadmaps = [
     ],
 ];
 
-// Cek apakah pakai mode DB atau static
-$useDBMode   = !empty($dbRoadmapSteps);
-$staticPhases = $staticRoadmaps[$targetCareerName] ?? $staticRoadmaps['Data Scientist'];
-
-$activePage = 'roadmap';
-
+// ── Helper function ──
 function convertGradeToScore($grade) {
     $map = ['A'=>100,'A+'=>100,'A-'=>95,'B+'=>90,'B'=>80,'B-'=>75,'C+'=>70,'C'=>60,'C-'=>55,'D'=>40,'E'=>0];
     return $map[strtoupper($grade ?? '')] ?? 0;
 }
+
+// Cek apakah pakai mode DB atau static
+$useDBMode    = !empty($dbRoadmapSteps);
+$staticPhases = $staticRoadmaps[$targetCareerName] ?? $staticRoadmaps['Data Scientist'];
+$activePage   = 'roadmap';
 ?>
 <!DOCTYPE html>
 <html lang="id">

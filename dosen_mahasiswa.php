@@ -31,12 +31,12 @@ if ($searchNIM !== '') {
     $student = $stmt->fetch();
 
     if (!$student) {
-        $error = "Mahasiswa dengan NIM \"$searchNIM\" tidak ditemukan.";
+        $error = 'Mahasiswa dengan NIM "' . htmlspecialchars($searchNIM) . '" tidak ditemukan.';
     } else {
         $sid = $student['id'];
 
         // Skills with gap
-        $skills = $db->prepare("
+        $skillStmt = $db->prepare("
             SELECT s.skill_name, s.category, s.industry_level,
                    COALESCE(ss.student_level, 0) AS student_level,
                    (s.industry_level - COALESCE(ss.student_level, 0)) AS gap
@@ -44,8 +44,8 @@ if ($searchNIM !== '') {
             LEFT JOIN student_skills ss ON ss.skill_id = s.id AND ss.student_id = ?
             ORDER BY gap DESC, s.category
         ");
-        $skills->execute([$sid]);
-        $skills = $skills->fetchAll();
+        $skillStmt->execute([$sid]);
+        $skills = $skillStmt->fetchAll();
 
         // Taken courses
         try {
@@ -132,10 +132,23 @@ $activePage = 'dosen_mahasiswa';
         .gr-c { background:rgba(245,158,11,.12); color:#f59e0b; }
         .gr-d { background:rgba(239,68,68,.12); color:#ef4444; }
         .cert-row { display:flex; align-items:center; gap:10px; padding:10px; background:var(--bg-secondary); border:1px solid var(--border); border-radius:8px; margin-bottom:8px; font-size:12px; }
-        .tier-badge { font-size:10px; font-weight:700; padding:2px 8px; border-radius:999px; flex-shrink:0; }
-        .tier-1 { background:rgba(34,211,238,.15); color:#22d3ee; }
-        .tier-2 { background:rgba(96,165,250,.15); color:#60a5fa; }
-        .tier-3 { background:rgba(148,163,184,.12); color:#94a3b8; }
+        .tier-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 52px;
+            height: 22px;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 0 8px;
+            border-radius: 999px;
+            flex-shrink: 0;
+            white-space: nowrap;
+            line-height: 1;
+        }
+        .tier-1 { background:rgba(34,211,238,.15); color:#22d3ee; border:1px solid rgba(34,211,238,.3); }
+        .tier-2 { background:rgba(96,165,250,.15);  color:#60a5fa; border:1px solid rgba(96,165,250,.3); }
+        .tier-3 { background:rgba(148,163,184,.12); color:#94a3b8; border:1px solid rgba(148,163,184,.3); }
         .alert-error { background:rgba(239,68,68,.1); border:1px solid rgba(239,68,68,.25); color:#ef4444; padding:12px 18px; border-radius:var(--radius-sm); margin-bottom:16px; font-size:13px; }
         .sim-result-box { background:rgba(34,211,238,.05); border:1px solid rgba(34,211,238,.2); border-radius:var(--radius-md); padding:20px; display:flex; align-items:center; gap:20px; flex-wrap:wrap; }
     </style>
@@ -189,7 +202,7 @@ $activePage = 'dosen_mahasiswa';
                 </div>
                 <div class="info-item">
                     <div class="info-item-label">Gap Tinggi</div>
-                    <div class="info-item-val" style="color:<?= $gapHigh >= 5 ? '#ef4444' : 'var(--text-primary)' ?>"><?= $gapHigh ?? 0 ?></div>
+                    <div class="info-item-val" style="color:<?= $gapHigh >= 5 ? '#ef4444' : 'var(--text-primary)' ?>"><?= $gapHigh ?></div>
                 </div>
             </div>
         </div>

@@ -13,55 +13,28 @@ $profile = $stmt->fetch();
 $studentId = $profile['id'];
 
 $stmt = $db->prepare("
-
-SELECT
-
-l.id,
-l.lab_name,
-l.focus_area,
-l.description,
-
-COALESCE(SUM(
-
-CASE
-
-WHEN sc.grade='A'  THEN lcm.weight*1.00
-WHEN sc.grade='A-' THEN lcm.weight*0.90
-WHEN sc.grade='B+' THEN lcm.weight*0.85
-WHEN sc.grade='B'  THEN lcm.weight*0.80
-WHEN sc.grade='B-' THEN lcm.weight*0.75
-WHEN sc.grade='C+' THEN lcm.weight*0.70
-WHEN sc.grade='C'  THEN lcm.weight*0.65
-ELSE 0
-
-END
-
-),0) AS score
-
-FROM labs l
-
-LEFT JOIN lab_course_mapping lcm
-ON l.id=lcm.lab_id
-
-LEFT JOIN student_courses sc
-ON sc.course_id=lcm.course_id
-AND sc.student_id=?
-
-GROUP BY
-l.id,
-l.lab_name,
-l.focus_area,
-l.description
-
-ORDER BY score DESC
-
+    SELECT
+        l.id, l.lab_name, l.focus_area, l.description,
+        COALESCE(SUM(
+            CASE
+                WHEN sc.grade='A'  THEN lcm.weight * 1.00
+                WHEN sc.grade='A-' THEN lcm.weight * 0.90
+                WHEN sc.grade='B+' THEN lcm.weight * 0.85
+                WHEN sc.grade='B'  THEN lcm.weight * 0.80
+                WHEN sc.grade='B-' THEN lcm.weight * 0.75
+                WHEN sc.grade='C+' THEN lcm.weight * 0.70
+                WHEN sc.grade='C'  THEN lcm.weight * 0.65
+                ELSE 0
+            END
+        ), 0) AS score
+    FROM labs l
+    LEFT JOIN lab_course_mapping lcm ON l.id = lcm.lab_id
+    LEFT JOIN student_courses sc ON sc.course_id = lcm.course_id AND sc.student_id = ?
+    GROUP BY l.id, l.lab_name, l.focus_area, l.description
+    ORDER BY score DESC
 ");
-
 $stmt->execute([$studentId]);
-
 $labs = $stmt->fetchAll();
-
-unset($lab);
 
 $targetCareer = $profile['target_career'] ?? '';
 

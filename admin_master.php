@@ -634,7 +634,7 @@ switch ($tab) {
                     <input type="number" step="1" name="tier2" value="<?= $sysConfig['saw_tier2_min'] ?? 70 ?>" class="form-control">
                 </div>
                 <div class="form-group">
-                    <label>Tier 3 — Perlu Pengembangan</label>
+                    <label>Tier 3 — Pengembangan</label>
                     <input type="number" step="1" name="tier3" value="<?= $sysConfig['saw_tier3_min'] ?? 55 ?>" class="form-control">
                 </div>
             </div>

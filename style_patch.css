@@ -24,8 +24,12 @@
 }
 
 /* Fix main-content margin (style.css pakai 260px, dashboard.css 240px) */
-.dashboard-body .main-content {
-    margin-left: 240px;
+/* Hanya berlaku di layar lebar ≥ 1100px (sidebar visible) */
+@media (min-width: 1101px) {
+    .dashboard-body .main-content,
+    .main-content {
+        margin-left: 240px;
+    }
 }
 
 /* Fix dashboard-grid: stretch biar kolom kanan setinggi kiri */
@@ -87,39 +91,19 @@
     }
 }
 
-@media (max-width: 768px) {
-    .dashboard-body .stat-grid {
-        grid-template-columns: repeat(2, 1fr) !important;
-    }
-    .dashboard-body .main-content {
-        margin-left: 0;
-    }
-    .dashboard-body .dash-right {
-        grid-template-columns: 1fr !important;
-    }
-}
-
-@media (max-width: 480px) {
-    .dashboard-body .stat-grid {
-        grid-template-columns: 1fr !important;
-    }
-}
-
 /* ══ GLOBAL NARROW / SPLIT-SCREEN FIX ══
    Override margin-left dari style.css (.main-content { margin-left: 260px })
-   Berlaku untuk SEMUA halaman di semua lebar < 900px ── */
+   Berlaku untuk SEMUA halaman di semua lebar ≤ 1100px ── */
 
-@media (max-width: 900px) {
+@media (max-width: 1100px) {
 
     /* Reset margin dari style.css yang pakai 260px */
     .main-content,
     .dashboard-body .main-content,
     body .main-content {
         margin-left: 0 !important;
-        width: 100vw !important;
-        max-width: 100vw !important;
-        overflow-x: hidden !important;
-        padding: 20px 16px !important;
+        width: 100% !important;
+        max-width: 100% !important;
         box-sizing: border-box !important;
     }
 
@@ -187,7 +171,7 @@
     }
 }
 
-@media (max-width: 560px) {
+@media (max-width: 600px) {
     .dashboard-body .stat-grid {
         grid-template-columns: 1fr !important;
     }

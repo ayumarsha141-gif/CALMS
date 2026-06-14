@@ -1,18 +1,14 @@
 <?php
-
-if (session_status() === PHP_SESSION_NONE) session_start();
+/**
+ * Backward-compatible dosen auth guard.
+ * Delegates to the main auth_guard.php to avoid code duplication.
+ */
+require_once __DIR__ . '/auth_guard.php';
 
 function requireDosen(): void {
-    if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'dosen') {
-        header('Location: login.php');
-        exit;
-    }
+    requireRole('dosen');
 }
 
 function getDosenUser(): array {
-    return [
-        'fullname' => $_SESSION['fullname'] ?? 'Dosen',
-        'email'    => $_SESSION['email']    ?? '',
-        'role'     => 'dosen',
-    ];
+    return getCurrentUser();
 }

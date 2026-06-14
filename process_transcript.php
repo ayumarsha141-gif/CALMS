@@ -85,13 +85,17 @@ try {
         }
     }
 
+    $parts = [];
+    if ($updatedIPK) $parts[] = "IPK ({$ipk}) tersimpan";
+    if ($savedCourseCnt > 0) $parts[] = "{$savedCourseCnt} matkul diperbarui";
+    if ($updatedSkillCnt > 0) $parts[] = "{$updatedSkillCnt} skill diperbarui";
+
     echo json_encode([
         'success'         => true,
         'ipk_saved'       => $updatedIPK,
         'courses_saved'   => $savedCourseCnt,
         'skills_updated'  => $updatedSkillCnt,
-        'message'         => "IPK " . ($updatedIPK ? "({$ipk}) " : '') .
-                             "tersimpan. {$updatedSkillCnt} skill & {$savedCourseCnt} matkul diperbarui.",
+        'message'         => !empty($parts) ? implode('. ', $parts) . '.' : 'Tidak ada data yang diperbarui.',
     ]);
 
 } catch (Exception $e) {
