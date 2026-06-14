@@ -142,7 +142,21 @@ $totalSkills = $stmt->fetchColumn();
     <link rel="stylesheet" href="dashboard.css">
     <link rel="stylesheet" href="style_patch.css">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-</head>
+        <style>
+            @media (max-width: 900px) {
+                #sidebar {
+                    transform: translateX(-100%) !important;
+                    position: fixed !important;
+                }
+                #sidebar.open {
+                    transform: translateX(0) !important;
+                }
+                .main-content {
+                    margin-left: 0 !important;
+                }
+            }
+        </style>
+    </head>
 <body class="dashboard-body">
 
 <?php

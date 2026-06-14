@@ -181,7 +181,7 @@ $descMap = [
         /* ── Layout: skill cards 2 kolom ── */
         .sg-content {
             display: grid;
-            grid-template-columns: 1fr;
+            grid-template-columns: 1fr 1fr;
             gap: 14px;
         }
 
@@ -258,10 +258,53 @@ $descMap = [
         @media (max-width: 900px) {
             .sg-content { grid-template-columns: 1fr; }
             .sg-stats   { grid-template-columns: repeat(2, 1fr); }
+            #sidebar {
+                transform: translateX(-100%) !important;
+                position: fixed !important;
+                top: 0 !important; left: 0 !important; bottom: 0 !important;
+                z-index: 999 !important;
+                transition: transform 0.25s ease !important;
+            }
+            #sidebar.open { transform: translateX(0) !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; }
+            .sidebar-toggle {
+                display: flex !important;
+                position: relative !important;
+                z-index: 9999 !important;
+                pointer-events: all !important;
+            }
+            #sidebar-overlay { display: none; !important; }
+            #sidebar-overlay.show { display: block; }
         }
         @media (max-width: 560px) {
             .sg-stats { grid-template-columns: 1fr 1fr; }
             .level-row { grid-template-columns: 1fr 1fr; }
+        }
+
+        .sidebar-toggle{
+            position: relative !important;
+            z-index: 1001 !important;
+        }
+
+        .topbar{
+            position: relative !important;
+            z-index: 1 !important;
+        }
+
+        .sg-stats,
+        .sg-content,
+        .skill-card{
+            position: static !important;
+            z-index: auto !important;
+        }
+
+        .sidebar{
+            z-index: 1000 !important;
+        }
+
+        .main-content{
+            position: relative;
+            z-index: 1;
         }
     </style>
 </head>
@@ -429,9 +472,22 @@ $descMap = [
 
 </main>
 
+<div id="sidebar-overlay"></div>
+
 <script>
-document.getElementById('sidebarToggle')
-    ?.addEventListener('click', () => document.getElementById('sidebar').classList.toggle('open'));
+const sidebarEl  = document.getElementById('sidebar');
+console.log(sidebarEl);
+const toggleBtn  = document.getElementById('sidebarToggle');
+const overlayEl  = document.getElementById('sidebar-overlay');
+
+function openSidebar()  { sidebarEl?.classList.add('open');    overlayEl?.classList.add('show'); }
+function closeSidebar() { sidebarEl?.classList.remove('open'); overlayEl?.classList.remove('show'); }
+
+toggleBtn?.addEventListener('click', (e) => {console.log('TOGGLE CLICKED');
+    e.stopPropagation();
+    sidebarEl?.classList.contains('open') ? closeSidebar() : openSidebar();
+});
+overlayEl?.addEventListener('click', closeSidebar);
 
 const skillState = {};
 <?php foreach ($allSkills as $sk): ?>
@@ -468,28 +524,6 @@ function recalcStats() {
     document.getElementById('cntHigh').textContent = high;
 }
 
-const courses = <?= $coursesJson ?>;
-document.getElementById('courseSearch')?.addEventListener('input', function () {
-    const kw = this.value.toLowerCase();
-    const box = document.getElementById('searchResults');
-    if (kw.length < 1) { box.innerHTML = ''; return; }
-    const hits = courses
-        .filter(c => (c.course_name || c.course_name_id || '').toLowerCase().includes(kw))
-        .slice(0, 10);
-    box.innerHTML = hits.map(c => {
-        const name = (c.course_name || c.course_name_id || '').replace(/'/g, "\\'");
-        return `<div class="search-item" onclick="
-            document.getElementById('courseSearch').value='${name}';
-            document.getElementById('selectedCourse').value='${c.id}';
-            document.getElementById('searchResults').innerHTML='';
-        ">${c.course_code} — ${c.course_name || c.course_name_id}</div>`;
-    }).join('');
-});
-
-document.addEventListener('click', e => {
-    if (!e.target.closest('#courseSearch') && !e.target.closest('#searchResults'))
-        document.getElementById('searchResults')?.innerHTML = '';
-});
 </script>
 </body>
 </html>

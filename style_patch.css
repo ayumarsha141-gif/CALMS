@@ -85,7 +85,7 @@
     .dashboard-body .dash-right .dash-panel:first-child {
         flex: unset !important;
     }
-}s
+}
 
 @media (max-width: 768px) {
     .dashboard-body .stat-grid {
@@ -102,5 +102,99 @@
 @media (max-width: 480px) {
     .dashboard-body .stat-grid {
         grid-template-columns: 1fr !important;
+    }
+}
+
+/* ══ GLOBAL NARROW / SPLIT-SCREEN FIX ══
+   Override margin-left dari style.css (.main-content { margin-left: 260px })
+   Berlaku untuk SEMUA halaman di semua lebar < 900px ── */
+
+@media (max-width: 900px) {
+
+    /* Reset margin dari style.css yang pakai 260px */
+    .main-content,
+    .dashboard-body .main-content,
+    body .main-content {
+        margin-left: 0 !important;
+        width: 100vw !important;
+        max-width: 100vw !important;
+        overflow-x: hidden !important;
+        padding: 20px 16px !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Sidebar slide keluar */
+    .sidebar,
+    .dashboard-body .sidebar,
+    body .sidebar {
+        position: fixed !important;
+        transform: translateX(-100%) !important;
+        transition: transform 0.25s ease !important;
+        z-index: 200 !important;
+    }
+
+    .sidebar.open,
+    .dashboard-body .sidebar.open,
+    body .sidebar.open {
+        transform: translateX(0) !important;
+    }
+
+    /* Tombol hamburger selalu muncul */
+    .sidebar-toggle {
+        display: flex !important;
+    }
+
+    /* Topbar tidak overflow */
+    .topbar {
+        flex-wrap: wrap !important;
+    }
+    .topbar-right {
+        display: none !important;
+    }
+
+    /* Grid fixes */
+    .dashboard-body .stat-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+    .dashboard-body .dashboard-grid {
+        grid-template-columns: 1fr !important;
+        align-items: start !important;
+    }
+    .dashboard-body .dash-right {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        height: auto !important;
+    }
+    .dashboard-body .panel-wide {
+        height: auto !important;
+    }
+    .dashboard-body .dash-right .dash-panel:first-child {
+        flex: unset !important;
+    }
+
+    /* Skill gap 1 kolom */
+    .sg-content {
+        grid-template-columns: 1fr !important;
+    }
+    .sg-stats {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    /* Admin grid */
+    .admin-grid,
+    .admin-grid-3 {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+@media (max-width: 560px) {
+    .dashboard-body .stat-grid {
+        grid-template-columns: 1fr !important;
+    }
+    .dashboard-body .dash-right {
+        grid-template-columns: 1fr !important;
+    }
+    .sg-stats {
+        grid-template-columns: 1fr 1fr !important;
     }
 }
