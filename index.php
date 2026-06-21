@@ -53,7 +53,7 @@ if (isset($_SESSION['user_id'])) {
                 <p class="hero-desc">
                     CALMS membantu mahasiswa Informatika Unram memahami skill gap,
                     memprediksi peluang rekrutmen, dan merencanakan karir sejak semester awal
-                    melalui simulasi Monte Carlo dan analisis industri.
+                    melalui simulasi SAW dan analisis industri.
                 </p>
                 <div class="hero-actions">
                     <a href="register.php" class="btn-primary btn-lg">Mulai Sekarang →</a>
@@ -66,7 +66,7 @@ if (isset($_SESSION['user_id'])) {
                     </div>
                     <div class="stat-divider"></div>
                     <div class="stat-item">
-                        <span class="stat-num">5</span>
+                        <span class="stat-num">3</span>
                         <span class="stat-label">Lab Rekomendasi</span>
                     </div>
                     <div class="stat-divider"></div>
@@ -93,7 +93,7 @@ if (isset($_SESSION['user_id'])) {
                             </svg>
                             <span class="prob-number">78%</span>
                         </div>
-                        <div class="prob-label">Monte Carlo Simulation<br><small>10.000 iterasi</small></div>
+                        <div class="prob-label">SAW Simulation<br><small>10.000 iterasi</small></div>
                     </div>
                     <div class="skill-bars">
                         <div class="skill-row">
@@ -139,7 +139,7 @@ if (isset($_SESSION['user_id'])) {
             </div>
             <div class="feature-card feature-card--green">
                 <div class="feature-icon">&#127922;</div>
-                <h3>Monte Carlo Simulation</h3>
+                <h3>SAW Simulation</h3>
                 <p>Prediksi peluang lolos rekrutmen menggunakan simulasi 10.000 iterasi adaptif.</p>
             </div>
             <div class="feature-card feature-card--purple">
@@ -280,7 +280,7 @@ if (isset($_SESSION['user_id'])) {
                 </div>
             </div>
             <div class="cta-right">
-                <h3>Siap Mulai?</h3>
+                <h3>Sudah Siap Belom?</h3>
                 <p>Daftar sekarang dan temukan roadmap karirmu sejak semester awal.</p>
                 <a href="register.php" class="btn-primary btn-lg btn-block">Daftar Gratis →</a>
                 <a href="login.php" class="btn-outline btn-block btn-block--mt">Sudah punya akun? Masuk</a>

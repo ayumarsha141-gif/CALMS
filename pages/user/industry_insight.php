@@ -43,7 +43,7 @@ $topCompanies = [
     ['name' => 'Google Indonesia','roles' => 'SWE, ML, DevRel',   'badge' => 'Big Tech',          'color' => '#4285f4'],
 ];
 
-$techStacks2024 = [
+$techStacks2026 = [
     ['name' => 'Python',        'pct' => 82, 'cat' => 'Language'],
     ['name' => 'JavaScript',    'pct' => 79, 'cat' => 'Language'],
     ['name' => 'Go (Golang)',   'pct' => 58, 'cat' => 'Language'],
@@ -71,7 +71,7 @@ $activePage = 'industry';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Industry Insight — CALMS</title>
-    <meta name="description" content="Tren industri teknologi Indonesia 2024 — demand, salary, dan tech stack.">
+    <meta name="description" content="Tren industri teknologi Indonesia 2026 — demand, salary, dan tech stack.">
     <link rel="stylesheet" href="../../styles/style.css">
     <link rel="stylesheet" href="../../styles/dashboard.css">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -130,11 +130,11 @@ $activePage = 'industry';
             </button>
             <div>
                 <h1 class="page-title">Industry Insight</h1>
-                <p class="page-sub">Tren industri teknologi Indonesia 2024</p>
+                <p class="page-sub">Tren industri teknologi Indonesia 2026</p>
             </div>
         </div>
         <div class="topbar-right">
-            <span class="year-badge">📊 Data 2024</span>
+            <span class="year-badge">📊 Data 2026</span>
         </div>
     </div>
 
@@ -143,7 +143,7 @@ $activePage = 'industry';
         <!-- Demand Roles -->
         <div class="insight-card">
             <div class="insight-title">🔥 Demand Posisi Terpanas</div>
-            <div class="insight-sub">Berdasarkan data job posting Indonesia 2024</div>
+            <div class="insight-sub">Berdasarkan data job posting Indonesia 2026</div>
             <?php foreach ($industryTrends as $trend): ?>
             <div class="demand-row">
                 <div class="demand-icon"><?= $trend['icon'] ?></div>
@@ -185,7 +185,7 @@ $activePage = 'industry';
             </div>
             <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);">
                 <div style="font-size:11px;color:var(--text-muted);line-height:1.6;">
-                    📍 Data berdasarkan survei Indeed, LinkedIn, dan Glassdoor Indonesia 2024.<br>
+                    📍 Data berdasarkan survei Indeed, LinkedIn, dan Glassdoor Indonesia 2026.<br>
                     Gaji dapat bervariasi tergantung kota, perusahaan, dan negosiasi.
                 </div>
             </div>
@@ -197,7 +197,7 @@ $activePage = 'industry';
             <div class="insight-sub">% perusahaan yang mencantumkan skill ini di job posting</div>
             <?php
             $catColors = ['Language'=>'#22d3ee','Framework'=>'#a78bfa','DevOps'=>'#f59e0b','Cloud'=>'#3b82f6','Database'=>'#10b981','AI/ML'=>'#f43f5e'];
-            foreach ($techStacks2024 as $stack): ?>
+            foreach ($techStacks2026 as $stack): ?>
             <div class="stack-row">
                 <span class="stack-cat" style="background:<?= ($catColors[$stack['cat']] ?? '#94a3b8') ?>22;color:<?= ($catColors[$stack['cat']] ?? '#94a3b8') ?>"><?= $stack['cat'] ?></span>
                 <span class="stack-name"><?= $stack['name'] ?></span>
