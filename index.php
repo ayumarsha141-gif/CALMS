@@ -2,9 +2,9 @@
 session_start();
 if (isset($_SESSION['user_id'])) {
     $role = $_SESSION['role'];
-    if ($role === 'admin') header('Location: dashboard.php');
-    elseif ($role === 'dosen') header('Location: dashboard.php');
-    else header('Location: dashboard.php');
+    if ($role === 'admin') header('Location: pages/user/dashboard.php');
+    elseif ($role === 'dosen') header('Location: pages/user/dashboard.php');
+    else header('Location: pages/user/dashboard.php');
     exit;
 }
 ?>
@@ -14,7 +14,7 @@ if (isset($_SESSION['user_id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CALMS — Career Adaptive Learning Management System</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 </head>
@@ -296,6 +296,6 @@ if (isset($_SESSION['user_id'])) {
         <p class="footer-copy">&copy; 2025 Informatika Universitas Mataram &middot; Project Akhir Pemrograman Web</p>
     </footer>
 
-    <script src="main.js"></script>
+    <script src="script/main.js"></script>
 </body>
 </html>

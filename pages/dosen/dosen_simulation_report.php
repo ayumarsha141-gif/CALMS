@@ -1,7 +1,7 @@
 <?php
 session_start();
-require_once 'includes/auth_guard_dosen.php';
-require_once 'config/database.php';
+require_once '../../includes/auth_guard_dosen.php';
+require_once '../../config/database.php';
 
 requireDosen();
 $dosenUser = getDosenUser();
@@ -38,8 +38,8 @@ $activePageDosen = 'simulation_report';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hasil Simulasi — CALMS</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="../../styles/style.css">
+    <link rel="stylesheet" href="../../styles/dashboard.css">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         .sim-table { width:100%; border-collapse:collapse; }
@@ -59,7 +59,7 @@ $activePageDosen = 'simulation_report';
     </style>
 </head>
 <body class="dashboard-body">
-<?php include 'includes/sidebar_dosen.php'; ?>
+<?php include '../../includes/sidebar_dosen.php'; ?>
 <main class="main-content">
     <div class="topbar">
         <div class="topbar-left">
@@ -174,7 +174,7 @@ $activePageDosen = 'simulation_report';
     </div>
     <?php endif; ?>
 </main>
-<script src="main.js"></script>
+<script src="../../script/main.js"></script>
 <script>
 const toggle = document.getElementById('sidebarToggle');
 const sidebar = document.getElementById('sidebar');

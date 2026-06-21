@@ -106,7 +106,7 @@ function getDisplayName(string $name): string
 
         <div class="nav-group-label nav-group-label--mt">Akun</div>
 
-        <a href="logout.php" class="nav-logout">
+        <a href="../../logout.php" class="nav-logout">
             <svg width="16"
                  height="16"
                  fill="none"

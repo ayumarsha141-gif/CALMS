@@ -1,7 +1,7 @@
 <?php
 session_start();
-require_once 'includes/auth_guard.php';
-require_once 'config/database.php';
+require_once '../../includes/auth_guard.php';
+require_once '../../config/database.php';
 
 requireRole('mahasiswa');
 $user = getCurrentUser();
@@ -98,8 +98,8 @@ $activePage = 'certifications';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sertifikasi & Portofolio — CALMS</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="../../styles/style.css">
+    <link rel="stylesheet" href="../../styles/dashboard.css">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         /* ══ Tab groups ══ */
@@ -214,7 +214,7 @@ $activePage = 'certifications';
 </head>
 <body class="dashboard-body">
 
-<?php include 'includes/sidebar.php'; ?>
+<?php include '../../includes/sidebar.php'; ?>
 
 <!-- Delete Modal -->
 <div class="modal-overlay" id="deleteModal" role="dialog" aria-modal="true">
@@ -544,7 +544,7 @@ $activePage = 'certifications';
 
 </main>
 
-<script src="main.js"></script>
+<script src="../../script/main.js"></script>
 <script>
 // Sidebar
 document.getElementById('sidebarToggle')?.addEventListener('click', () => {

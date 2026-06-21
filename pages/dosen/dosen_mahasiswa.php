@@ -1,7 +1,7 @@
 <?php
 session_start();
-require_once 'includes/auth_guard.php';
-require_once 'config/database.php';
+require_once '../../includes/auth_guard.php';
+require_once '../../config/database.php';
 
 requireRole('dosen');
 $user = getCurrentUser();
@@ -90,8 +90,8 @@ $activePage = 'dosen_mahasiswa';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Monitor Mahasiswa — CALMS Dosen</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="../../styles/style.css">
+    <link rel="stylesheet" href="../../styles/dashboard.css">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         .search-bar { display:flex; gap:12px; align-items:center; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:20px 24px; margin-bottom:28px; }
@@ -154,7 +154,7 @@ $activePage = 'dosen_mahasiswa';
     </style>
 </head>
 <body class="dashboard-body">
-<?php include 'includes/sidebar_dosen.php'; ?>
+<?php include '../../includes/sidebar_dosen.php'; ?>
 
 <main class="main-content">
     <div class="topbar">
@@ -321,7 +321,7 @@ $activePage = 'dosen_mahasiswa';
     <?php endif; ?>
 </main>
 
-<script src="main.js"></script>
+<script src="../../script/main.js"></script>
 <script>
 document.getElementById('sidebarToggle')?.addEventListener('click', () =>
     document.getElementById('sidebar').classList.toggle('open'));

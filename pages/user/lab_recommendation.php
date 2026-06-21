@@ -1,7 +1,7 @@
 <?php
 session_start();
-require_once 'includes/auth_guard.php';
-require_once 'config/database.php';
+require_once '../../includes/auth_guard.php';
+require_once '../../config/database.php';
 
 requireRole('mahasiswa');
 $user = getCurrentUser();
@@ -47,8 +47,8 @@ $activePage = 'lab';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lab Recommendation — CALMS</title>
     <meta name="description" content="Rekomendasi lab penelitian berdasarkan skill dan target karirmu.">
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="../../styles/style.css">
+    <link rel="stylesheet" href="../../styles/dashboard.css">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         .lab-intro { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:24px; margin-bottom:28px; display:flex; align-items:center; gap:20px; }
@@ -78,7 +78,7 @@ $activePage = 'lab';
 </head>
 <body class="dashboard-body">
 
-<?php include 'includes/sidebar.php'; ?>
+<?php include '../../includes/sidebar.php'; ?>
 
 <main class="main-content">
     <div class="topbar">
@@ -166,7 +166,7 @@ $activePage = 'lab';
 
 </main>
 
-<script src="main.js"></script>
+<script src="../../script/main.js"></script>
 <script>
 const toggle  = document.getElementById('sidebarToggle');
 const sidebar = document.getElementById('sidebar');

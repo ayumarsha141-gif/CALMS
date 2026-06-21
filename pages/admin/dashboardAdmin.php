@@ -1,7 +1,7 @@
 <?php
 session_start();
-require_once 'includes/auth_guard.php';
-require_once 'config/database.php';
+require_once '../../includes/auth_guard.php';
+require_once '../../config/database.php';
 
 requireRole('admin');
 $user = getCurrentUser();
@@ -74,9 +74,9 @@ $activePage = 'admin_dashboard';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard — CALMS</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="dashboard.css">
-    <link rel="stylesheet" href="style_patch.css">
+    <link rel="stylesheet" href="../../styles/style.css">
+    <link rel="stylesheet" href="../../styles/dashboard.css">
+    <link rel="stylesheet" href="../../styles/style_patch.css">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         .main-content {
@@ -203,7 +203,7 @@ $activePage = 'admin_dashboard';
 </head>
 <body class="dashboard-body admin-body">
 
-<?php include 'includes/sidebar_admin.php'; ?>
+<?php include '../../includes/sidebar_admin.php'; ?>
 
 <main class="main-content">
 

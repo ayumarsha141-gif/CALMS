@@ -4,9 +4,9 @@ require_once 'config/database.php';
 
 if (isset($_SESSION['user_id'])) {
     $role = $_SESSION['role'];
-    if ($role === 'dosen') { header('Location: dashboard_dosen.php'); exit; }
-    if ($role === 'admin') { header('Location: dashboardAdmin.php'); exit; }
-    header('Location: dashboard.php'); exit;
+    if ($role === 'dosen') { header('Location: pages/dosen/dashboard_dosen.php'); exit; }
+    if ($role === 'admin') { header('Location: pages/admin/dashboardAdmin.php'); exit; }
+    header('Location: pages/user/dashboard.php'); exit;
 }
 
 $DOSEN_ACCOUNTS = [
@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['email']    = $email;
                 $_SESSION['role']     = 'admin';
 
-                header('Location: dashboardAdmin.php');
+                header('Location: pages/admin/dashboardAdmin.php');
                 exit;
             }
         }
@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['fullname'] = $dosen['name'];
                 $_SESSION['email']    = $email;
                 $_SESSION['role']     = 'dosen';
-                header('Location: dashboard_dosen.php');
+                header('Location: pages/dosen/dashboard_dosen.php');
                 exit;
             }
         }
@@ -79,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['email']    = $user['email'];
             $_SESSION['role']     = $user['role'];
             session_regenerate_id(true);
-            header('Location: dashboard.php');
+            header('Location: pages/user/dashboard.php');
             exit;
         } else {
             $error = 'Email atau password salah.';
@@ -93,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Masuk — CALMS</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         .login-hint { margin-top: 24px; padding: 16px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: var(--radius-md); }

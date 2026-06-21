@@ -1,7 +1,7 @@
 <?php
 session_start();
-require_once 'includes/auth_guard.php';
-require_once 'config/database.php';
+require_once '../../includes/auth_guard.php';
+require_once '../../config/database.php';
 
 requireRole('mahasiswa');
 $user = getCurrentUser();
@@ -151,8 +151,8 @@ $activePage   = 'roadmap';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Career Roadmap — CALMS</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="../../styles/style.css">
+    <link rel="stylesheet" href="../../styles/dashboard.css">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         /* Career Selector */
@@ -207,7 +207,7 @@ $activePage   = 'roadmap';
     </style>
 </head>
 <body class="dashboard-body">
-<?php include 'includes/sidebar.php'; ?>
+<?php include '../../includes/sidebar.php'; ?>
 
 <main class="main-content">
     <div class="topbar">
@@ -340,7 +340,7 @@ $activePage   = 'roadmap';
     </div>
 </main>
 
-<script src="main.js"></script>
+<script src="../../script/main.js"></script>
 <script>
 document.getElementById('sidebarToggle')?.addEventListener('click', () => document.getElementById('sidebar').classList.toggle('open'));
 </script>

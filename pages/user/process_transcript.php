@@ -5,8 +5,8 @@
  * Menyimpan: IPK → mahasiswa_profiles, courses → student_courses, skills → student_skills
  */
 session_start();
-require_once 'includes/auth_guard.php';
-require_once 'config/database.php';
+require_once '../../includes/auth_guard.php';
+require_once '../../config/database.php';
 
 header('Content-Type: application/json');
 

@@ -1,7 +1,7 @@
 <?php
 session_start();
-require_once 'includes/auth_guard.php';
-require_once 'config/database.php';
+require_once '../../includes/auth_guard.php';
+require_once '../../config/database.php';
 
 requireRole('mahasiswa');
 $user = getCurrentUser();
@@ -27,15 +27,13 @@ $stmt = $db->prepare("
         (s.industry_level - COALESCE(ss.student_level, 0)) AS gap
     FROM skills s
     JOIN career_skills cs
-        ON CONVERT(UPPER(TRIM(cs.skill_name)) USING utf8mb4)
-         = CONVERT(UPPER(TRIM(s.skill_name))  USING utf8mb4)
+        ON UPPER(TRIM(cs.skill_name)) = UPPER(TRIM(s.skill_name))
     JOIN career_positions cp
         ON cp.id = cs.career_id
     LEFT JOIN student_skills ss
         ON ss.skill_id = s.id
         AND ss.student_id = ?
-    WHERE CONVERT(cp.position_name USING utf8mb4)
-        = CONVERT(? USING utf8mb4)
+    WHERE cp.position_name = ?
     ORDER BY gap DESC
     LIMIT 5
 ");
@@ -64,25 +62,23 @@ $stmt = $db->prepare("
         SUM(COALESCE(ss.student_level, 0) / GREATEST(s.industry_level, 1) * 100) / COUNT(*) AS skill_part
     FROM skills s
     JOIN career_skills cs
-        ON CONVERT(UPPER(TRIM(cs.skill_name)) USING utf8mb4)
-         = CONVERT(UPPER(TRIM(s.skill_name))  USING utf8mb4)
+        ON UPPER(TRIM(cs.skill_name)) = UPPER(TRIM(s.skill_name))
     JOIN career_positions cp
         ON cp.id = cs.career_id
     LEFT JOIN student_skills ss
         ON ss.skill_id = s.id
-        AND ss.student_id = (SELECT id FROM mahasiswa_profiles WHERE user_id = ?)
-    WHERE CONVERT(cp.position_name USING utf8mb4)
-        = CONVERT((SELECT target_career FROM mahasiswa_profiles WHERE user_id = ?) USING utf8mb4)
+        AND ss.student_id = ?
+    WHERE cp.position_name = ?
 ");
-$stmt->execute([$user['id'], $user['id']]);
+$stmt->execute([$studentId, $profile['target_career']]);
 $skillPart = (float)($stmt->fetchColumn() ?? 0);
 
 $stmt = $db->prepare("
     SELECT AVG(score)
     FROM student_courses
-    WHERE student_id = (SELECT id FROM mahasiswa_profiles WHERE user_id = ?)
+    WHERE student_id = ?
 ");
-$stmt->execute([$user['id']]);
+$stmt->execute([$studentId]);
 $coursePart = (float)($stmt->fetchColumn() ?? 0);
 
 $readinessScore = (int) round(($skillPart * 0.6) + ($coursePart * 0.4));
@@ -138,9 +134,9 @@ $totalSkills = $stmt->fetchColumn();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard — CALMS</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="dashboard.css">
-    <link rel="stylesheet" href="style_patch.css">
+    <link rel="stylesheet" href="../../styles/style.css">
+    <link rel="stylesheet" href="../../styles/dashboard.css">
+    <link rel="stylesheet" href="../../styles/style_patch.css">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
         <style>
             @media (max-width: 900px) {
@@ -161,7 +157,7 @@ $totalSkills = $stmt->fetchColumn();
 
 <?php
 $activePage = 'dashboard';
-include 'includes/sidebar.php';
+include '../../includes/sidebar.php';
 ?>
 
 <main class="main-content">
@@ -339,7 +335,7 @@ include 'includes/sidebar.php';
     </div>
 </main>
 
-<script src="main.js"></script>
+<script src="../../script/main.js"></script>
 <script>
 const toggle  = document.getElementById('sidebarToggle');
 const sidebar = document.getElementById('sidebar');

@@ -10,7 +10,7 @@ function isLoggedIn(): bool {
 
 function requireLogin(): void {
     if (!isLoggedIn()) {
-        header('Location: login.php');
+        header('Location: ../../login.php');
         exit;
     }
 }
@@ -25,7 +25,7 @@ function requireRole(string ...$roles): void {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>403 Forbidden — CALMS</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../../styles/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body class="error-page">
