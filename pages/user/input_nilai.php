@@ -771,7 +771,6 @@ $activePage = 'input_nilai'; // tetap highlight menu skill_gap
 
 </main>
 
-<script src="../../script/main.js"></script>
 <script>
 // Sidebar
 document.getElementById('sidebarToggle')

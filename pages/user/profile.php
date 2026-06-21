@@ -842,7 +842,6 @@ $activePage = 'profile';
     </div><!-- .profile-grid -->
 </main>
 
-<script src="../../script/main.js"></script>
 <script>
 // Sidebar toggle
 const toggle  = document.getElementById('sidebarToggle');

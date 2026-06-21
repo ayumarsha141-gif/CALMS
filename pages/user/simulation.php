@@ -639,7 +639,7 @@ $activePage = 'simulation';
 
     </div><!-- .sim-page -->
 </main>
-<script src="../../script/main.js"></script>
+
 <script>
 document.getElementById('sidebarToggle')?.addEventListener('click', () => {
     document.getElementById('sidebar').classList.toggle('open');

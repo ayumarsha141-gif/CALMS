@@ -10,9 +10,6 @@ $db   = getDB();
 $stmt = $db->query("SELECT COUNT(*) FROM users WHERE is_active = 1");
 $totalUsers = $stmt->fetchColumn();
 
-$stmt = $db->query("SELECT COUNT(*) FROM users WHERE role = 'mahasiswa' AND is_active = 1");
-$totalMahasiswa = $stmt->fetchColumn();
-
 $stmt = $db->query("SELECT COUNT(*) FROM simulations");
 $totalSimulations = $stmt->fetchColumn();
 
@@ -94,7 +91,7 @@ $activePage = 'admin_dashboard';
 
         .stat-grid-admin {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 16px;
             margin-bottom: 24px;
         }
@@ -235,15 +232,6 @@ $activePage = 'admin_dashboard';
             </div>
             <div><div class="lbl">Total Pengguna</div><div class="val" style="color:#22d3ee"><?= $totalUsers ?></div></div>
             <div class="bar-track"><div class="bar-fill" style="background:#22d3ee" data-width="100"></div></div>
-        </div>
-
-        <div class="stat-card-adm">
-            <div class="icon" style="background:rgba(16,185,129,.1)">
-                <svg width="18" height="18" fill="none" stroke="#10b981" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            </div>
-            <div><div class="lbl">Mahasiswa Terdaftar</div><div class="val" style="color:#10b981"><?= $totalMahasiswa ?></div></div>
-            <?php $mPct = $totalUsers > 0 ? round(($totalMahasiswa/$totalUsers)*100) : 0; ?>
-            <div class="bar-track"><div class="bar-fill" style="background:#10b981" data-width="<?= $mPct ?>"></div></div>
         </div>
 
         <div class="stat-card-adm">

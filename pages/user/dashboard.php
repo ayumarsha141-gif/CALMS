@@ -335,7 +335,6 @@ include '../../includes/sidebar.php';
     </div>
 </main>
 
-<script src="../../script/main.js"></script>
 <script>
 const toggle  = document.getElementById('sidebarToggle');
 const sidebar = document.getElementById('sidebar');

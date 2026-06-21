@@ -1,11 +1,11 @@
 <?php
 session_start();
-require_once '../../includes/auth_guard_dosen.php';
+require_once '../../includes/auth_guard.php';
 require_once '../../config/database.php';
 
-requireDosen();
-$dosenUser = getDosenUser();
-$db = getDB();
+requireRole('dosen');
+$user = getCurrentUser();
+$db   = getDB();
 
 $skillReport = $db->query("
     SELECT
@@ -167,7 +167,7 @@ $activePageDosen = 'skill_report';
     </div>
     <?php endforeach; ?>
 </main>
-<script src="../../script/main.js"></script>
+
 <script>
 const toggle = document.getElementById('sidebarToggle');
 const sidebar = document.getElementById('sidebar');

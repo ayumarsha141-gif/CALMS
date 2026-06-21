@@ -1,11 +1,11 @@
 <?php
 session_start();
-require_once '../../includes/auth_guard_dosen.php';
+require_once '../../includes/auth_guard.php';
 require_once '../../config/database.php';
 
-requireDosen();
-$dosenUser = getDosenUser();
-$db = getDB();
+requireRole('dosen');
+$user = getCurrentUser();
+$db   = getDB();
 
 // Semua simulasi dengan info mahasiswa
 $simulations = $db->query("
@@ -174,7 +174,7 @@ $activePageDosen = 'simulation_report';
     </div>
     <?php endif; ?>
 </main>
-<script src="../../script/main.js"></script>
+
 <script>
 const toggle = document.getElementById('sidebarToggle');
 const sidebar = document.getElementById('sidebar');

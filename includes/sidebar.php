@@ -13,6 +13,7 @@ $nav = [
     ['page' => 'industry',       'href' => 'industry_insight.php', 'label' => 'Industry Insight',    'icon' => '<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>'],
 ];
 ?>
+
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
         <span class="logo-text">CALMS</span><span class="logo-dot">.</span>

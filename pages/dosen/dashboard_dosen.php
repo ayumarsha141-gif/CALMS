@@ -1,11 +1,11 @@
 <?php
 session_start();
-require_once '../../includes/auth_guard_dosen.php';
+require_once '../../includes/auth_guard.php';
 require_once '../../config/database.php';
 
-requireDosen();
-$dosenUser = getDosenUser();
-$db = getDB();
+requireRole('dosen');
+$user = getCurrentUser();
+$db   = getDB();
 
 // Total mahasiswa
 $totalMhs = $db->query("SELECT COUNT(*) FROM users WHERE role = 'mahasiswa' AND is_active = 1")->fetchColumn();
@@ -364,7 +364,7 @@ $activePageDosen = 'dashboard';
                 <div class="panel-header">
                     <div>
                         <h2 class="panel-title">🎲 Simulasi Rekrutmen Terbaru</h2>
-                        <p class="panel-sub">Hasil Monte Carlo mahasiswa terkini</p>
+                        <p class="panel-sub">Hasil Simulasi SAW mahasiswa terkini</p>
                     </div>
                 </div>
                 <?php if (empty($simSummary)): ?>
@@ -478,7 +478,6 @@ $activePageDosen = 'dashboard';
     </div>
 </main>
 
-<script src="../../script/main.js"></script>
 <script>
 const toggle  = document.getElementById('sidebarToggle');
 const sidebar = document.getElementById('sidebar');

@@ -1,11 +1,11 @@
 <?php
 session_start();
-require_once '../../includes/auth_guard_dosen.php';
+require_once '../../includes/auth_guard.php';
 require_once '../../config/database.php';
 
-requireDosen();
-$dosenUser = getDosenUser();
-$db = getDB();
+requireRole('dosen');
+$user = getCurrentUser();
+$db   = getDB();
 
 // Semua lab
 $labs = $db->query("SELECT * FROM labs ORDER BY id")->fetchAll();
@@ -151,7 +151,7 @@ $activePageDosen = 'lab_review';
         <?php endforeach; ?>
     </div>
 </main>
-<script src="../../script/main.js"></script>
+
 <script>
 const toggle = document.getElementById('sidebarToggle');
 const sidebar = document.getElementById('sidebar');
