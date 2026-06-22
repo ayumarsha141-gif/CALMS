@@ -7,10 +7,9 @@ requireRole('dosen');
 $user = getCurrentUser();
 $db   = getDB();
 
-// Semua lab
 $labs = $db->query("SELECT * FROM labs ORDER BY id")->fetchAll();
 
-// Per lab: hitung berapa mahasiswa yang cocok (match_score > 0)
+// untuk hitung berapa mahasiswa yang cocok di lab 1/2/3
 function scoreMatch(string $labTags, array $studentSkills): int {
     $tags = array_map('trim', explode(',', $labTags));
     $count = 0;
@@ -22,7 +21,7 @@ function scoreMatch(string $labTags, array $studentSkills): int {
     return $count;
 }
 
-// Ambil semua mahasiswa beserta skillnya
+// disini join untuk ambil semua mahasiswa beserta skillnya per lab
 $allStudents = $db->query("
     SELECT mp.id, u.fullname, mp.nim, mp.semester, mp.target_career,
            GROUP_CONCAT(s.skill_name SEPARATOR ',') AS skills
@@ -33,7 +32,7 @@ $allStudents = $db->query("
     GROUP BY mp.id
 ")->fetchAll();
 
-// Hitung distribusi mahasiswa per lab
+// untuk hitung distribusi mahasiswa per lab
 $labData = [];
 foreach ($labs as $lab) {
     $matched = [];

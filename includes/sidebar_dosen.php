@@ -1,7 +1,4 @@
 <?php
-/**
- * CALMS — Dosen Sidebar
- */
 
 if (!isset($activePageDosen)) {
     $activePageDosen = '';

@@ -17,7 +17,7 @@ $profile = $stmt->fetch();
 
 $studentId = $profile['id'];
 
-// Ambil skill sesuai target_career (sama persis dengan skill_gap.php)
+// join untuk ambil skill sesuai target_career 
 $stmt = $db->prepare("
     SELECT
         s.skill_name,
@@ -51,12 +51,10 @@ $stmt = $db->prepare("
 $stmt->execute([$user['id']]);
 $simulation = $stmt->fetch();
 
-// Jika belum ada target career atau skill belum diisi, $skills tetap array kosong
 
-// Peluang Rekrutmen = dari probability_score simulasi (termasuk porto & sertifikasi)
+// untuk peluang rekrutmen = dari probability_score simulasi (termasuk porto & sertifikasi)
 $probScore = $simulation ? round($simulation['probability_score'] * 100) : 0;
 
-// Career Readiness = 60% skill readiness + 40% avg nilai matkul (sama dengan skill_gap.php)
 $stmt = $db->prepare("
     SELECT
         SUM(COALESCE(ss.student_level, 0) / GREATEST(s.industry_level, 1) * 100) / COUNT(*) AS skill_part

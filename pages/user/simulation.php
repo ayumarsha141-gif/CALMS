@@ -7,27 +7,23 @@ requireRole('mahasiswa');
 $user = getCurrentUser();
 $db   = getDB();
 
-// ── Profile ──
 $stmt = $db->prepare("SELECT mp.*, u.fullname, u.email FROM mahasiswa_profiles mp JOIN users u ON u.id = mp.user_id WHERE mp.user_id = ?");
 $stmt->execute([$user['id']]);
 $profile   = $stmt->fetch();
 $studentId = $profile['id'];
 
-// ── Handle: Delete project ──
 if (isset($_GET['delete_project'])) {
     $db->prepare("DELETE FROM student_projects WHERE id=? AND student_id=?")->execute([$_GET['delete_project'], $studentId]);
     header("Location: simulation.php");
     exit;
 }
 
-// ── Handle: Delete cert ──
 if (isset($_GET['delete_cert'])) {
     $db->prepare("DELETE FROM student_certifications WHERE id=? AND student_id=?")->execute([$_GET['delete_cert'], $studentId]);
     header("Location: simulation.php");
     exit;
 }
 
-// ── Handle: Add single project (AJAX-friendly, POST) ──
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_single_project'])) {
     $name  = trim($_POST['project_name'] ?? '');
     $scale = $_POST['project_scale'] ?? 'kecil';
@@ -40,14 +36,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_single_project']))
     exit;
 }
 
-// ── Handle: Add single cert ──
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_single_cert'])) {
     $name     = trim($_POST['cert_name'] ?? '');
     $provider = trim($_POST['cert_provider'] ?? '');
     $tier     = (int)($_POST['cert_tier'] ?? 3);
     if ($name !== '') {
         $score = $tier == 1 ? 100 : ($tier == 2 ? 75 : 50);
-        // Konsisten dengan certifications.php — include status & obtained_date
         $db->prepare("INSERT INTO student_certifications (student_id, cert_name, provider, tier, score, status, obtained_date) VALUES (?,?,?,?,?,?,?)")
             ->execute([$studentId, $name, $provider, $tier, $score, 'owned', null]);
     }
@@ -58,15 +52,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_single_cert'])) {
 $targetCareer = $profile['target_career'] ?? '';
 
 // Bobot 3 komponen: Skill Praktis, Portofolio, Sertifikasi
-$w1 = 0.50; // Skill Praktis (Skill Gap)
-$w2 = 0.30; // Portofolio
-$w3 = 0.20; // Sertifikasi
+$w1 = 0.50; 
+$w2 = 0.30; 
+$w3 = 0.20; 
 
 $tier1 = 85;
 $tier2 = 70;
 $tier3 = 55;
 
-// ── Normalize career ──
 $stmt     = $db->query("SELECT id, position_name FROM career_positions ORDER BY position_name ASC");
 $allRoles = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
 $careerId = array_search($targetCareer, $allRoles, true);
@@ -76,7 +69,6 @@ if (!$careerId && !empty($allRoles)) {
     $db->prepare("UPDATE mahasiswa_profiles SET target_career = ? WHERE id = ?")->execute([$targetCareer, $studentId]);
 }
 
-// ── C1: Skill Praktis (dari Skill Gap) ──
 $row = $db->prepare("
     SELECT AVG(LEAST(ss.student_level / NULLIF(sk.industry_level,0), 1)) * 100 AS readiness
     FROM career_skills cs
@@ -88,7 +80,6 @@ $row->execute([$studentId, $careerId]);
 $data = $row->fetch();
 $c1_score = round($data['readiness'] ?? 0, 2);
 
-// ── Fetch projects & certs ──
 $stmt = $db->prepare("SELECT * FROM student_projects WHERE student_id=? ORDER BY id DESC");
 $stmt->execute([$studentId]);
 $projects = $stmt->fetchAll();
@@ -97,13 +88,11 @@ $stmt = $db->prepare("SELECT * FROM student_certifications WHERE student_id=? OR
 $stmt->execute([$studentId]);
 $certs = $stmt->fetchAll();
 
-// ── C2: Portofolio & C3: Sertifikasi ──
 $totalProject = count($projects);
 $c2_score = min(100, $totalProject * 20);
 $totalCertScore = array_sum(array_column($certs, 'score'));
 $c3_score = min(100, $totalCertScore);
 
-// ── Run simulation ──
 $result = null;
 $success = false;
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['run_simulation'])) {
@@ -154,13 +143,11 @@ $activePage = 'simulation';
     <link rel="stylesheet" href="../../styles/dashboard.css">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        /* ── Layout ── */
         .sim-page { display: flex; flex-direction: column; gap: 2rem; }
         .predictor-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
         @media(max-width: 700px) { .predictor-grid { grid-template-columns: repeat(2, 1fr); } }
         @media(max-width: 480px) { .predictor-grid { grid-template-columns: 1fr; } }
 
-        /* ── Predictor cards ── */
         .predictor-card {
             background: var(--bg-card);
             border: 1px solid rgba(255,255,255,.07);
@@ -178,7 +165,6 @@ $activePage = 'simulation';
         .score-purple { color: #a78bfa; }
         .score-amber { color: #fbbf24; }
 
-        /* ── Result hero ── */
         .result-hero { background: linear-gradient(135deg, #0f172a, #1e293b); border: 1px solid rgba(34,211,238,.2); border-radius: 20px; padding: 2.5rem; display: flex; align-items: center; gap: 2.5rem; flex-wrap: wrap; }
         .result-ring-wrap { position: relative; width: 160px; height: 160px; flex-shrink: 0; }
         .result-ring-wrap svg { width: 160px; height: 160px; }
@@ -194,7 +180,6 @@ $activePage = 'simulation';
         .verdict-amber { background: rgba(251,191,36,.15); color: #fbbf24; border: 1px solid rgba(251,191,36,.3); }
         .verdict-red { background: rgba(239,68,68,.15); color: #f87171; border: 1px solid rgba(239,68,68,.3); }
 
-        /* ── Score bars ── */
         .score-bars { display: flex; flex-direction: column; gap: .8rem; min-width: 220px; flex: 1; }
         .score-bar-row { display: flex; flex-direction: column; gap: .3rem; }
         .score-bar-label { display: flex; justify-content: space-between; font-size: .8rem; }
@@ -205,7 +190,6 @@ $activePage = 'simulation';
         .fill-purple { background: linear-gradient(90deg, #a78bfa, #8b5cf6); }
         .fill-amber { background: linear-gradient(90deg, #fbbf24, #f59e0b); }
 
-        /* ── Section ── */
         .sim-section { background: var(--bg-card); border: 1px solid rgba(255,255,255,.07); border-radius: 16px; overflow: hidden; }
         .sim-section-head { display: flex; align-items: center; gap: .75rem; padding: 1.25rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,.06); }
         .sim-section-num { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: .8rem; font-weight: 700; background: linear-gradient(135deg, #22d3ee, #3b82f6); color: #000; flex-shrink: 0; }
@@ -213,13 +197,11 @@ $activePage = 'simulation';
         .sim-section-sub { font-size: .75rem; color: #64748b; margin-left: auto; }
         .sim-section-body { padding: 1.5rem; }
 
-        /* ── Badges ── */
         .tier-badge { padding: .25rem .6rem; border-radius: 6px; font-size: .7rem; font-weight: 600; }
         .tier-1 { background: rgba(34,211,238,.15); color: #22d3ee; }
         .tier-2 { background: rgba(96,165,250,.15); color: #60a5fa; }
         .tier-3 { background: rgba(148,163,184,.12); color: #94a3b8; }
 
-        /* ── Add form (inline) ── */
         .add-item-form {
             background: rgba(255,255,255,.02);
             border: 1px dashed rgba(34,211,238,.25);
@@ -264,7 +246,6 @@ $activePage = 'simulation';
         }
         .btn-add-submit:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(34,211,238,.3); }
 
-        /* ── Saved items list ── */
         .saved-items { display: flex; flex-direction: column; gap: .6rem; }
         .saved-item {
             display: flex;
@@ -329,10 +310,8 @@ $activePage = 'simulation';
         }
         .empty-state svg { margin-bottom: .5rem; opacity: .3; }
 
-        /* ── Info/warn banners ── */
         .info-banner { background: rgba(34,211,238,.05); border: 1px solid rgba(34,211,238,.2); border-radius: 12px; padding: 16px 20px; margin-bottom: 24px; color: var(--text-secondary); font-size: 13px; }
 
-        /* ── Submit bar ── */
         .sim-submit-bar { display: flex; justify-content: flex-end; gap: 1rem; align-items: center; flex-wrap: wrap; }
         .btn-run {
             padding: .85rem 2.2rem;
@@ -350,7 +329,6 @@ $activePage = 'simulation';
         }
         .btn-run:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(34,211,238,.35); }
 
-        /* ── Section hint pills ── */
         .hint-pills { display: flex; gap: .75rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
         .hint-pill { padding: .5rem .9rem; border-radius: 9px; font-size: .78rem; display: flex; align-items: center; gap: .4rem; }
     </style>
@@ -372,7 +350,6 @@ $activePage = 'simulation';
 
     <div class="sim-page">
 
-        <!-- ══ RESULT HERO ══ -->
         <?php if ($success && $result):
             $ts = round($result['total_score'], 1);
             $circumference = 2 * M_PI * 58;
@@ -423,14 +400,12 @@ $activePage = 'simulation';
         </div>
         <?php endif; ?>
 
-        <!-- ══ INFO BANNER ══ -->
         <div class="info-banner">
             <strong style="color:var(--cyan)">Info:</strong> Skor Skill Praktis diambil otomatis dari data Skill Gap untuk karir
             <strong><?= htmlspecialchars($targetCareer) ?></strong>.
             Ubah karir atau perbarui level skill di halaman <a href="skill_gap.php" style="color:var(--cyan)">Skill Gap</a>.
         </div>
 
-        <!-- ══ SCORE OVERVIEW CARDS ══ -->
         <div class="predictor-grid">
             <div class="predictor-card">
                 <div class="pred-label">C1: Skill Praktis</div>
@@ -449,7 +424,7 @@ $activePage = 'simulation';
             </div>
         </div>
 
-        <!-- ══ C2: PORTOFOLIO ══ -->
+        <!-- portopolio -->
         <div class="sim-section">
             <div class="sim-section-head">
                 <div class="sim-section-num">C2</div>
@@ -459,7 +434,7 @@ $activePage = 'simulation';
                 <div class="sim-section-sub">Bobot: <?= $w2 * 100 ?>%</div>
             </div>
             <div class="sim-section-body">
-                <!-- Hint pills -->
+              
                 <div class="hint-pills">
                     <div class="hint-pill" style="background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2)">
                         <span class="scale-badge scale-besar">Besar</span>
@@ -473,7 +448,7 @@ $activePage = 'simulation';
                     </div>
                 </div>
 
-                <!-- Add project form -->
+                <!-- tambahkan project -->
                 <form method="POST">
                     <input type="hidden" name="add_single_project" value="1">
                     <div class="add-item-form add-form-proj">
@@ -494,7 +469,7 @@ $activePage = 'simulation';
                     </div>
                 </form>
 
-                <!-- Saved projects list -->
+                <!-- simpan list project -->
                 <?php if ($projects): ?>
                 <div class="saved-items">
                     <?php foreach ($projects as $p): ?>
@@ -528,7 +503,7 @@ $activePage = 'simulation';
             </div>
         </div>
 
-        <!-- ══ C3: SERTIFIKASI ══ -->
+        <!-- sertip -->
         <div class="sim-section">
             <div class="sim-section-head">
                 <div class="sim-section-num">C3</div>
@@ -538,7 +513,7 @@ $activePage = 'simulation';
                 <div class="sim-section-sub">Bobot: <?= $w3 * 100 ?>%</div>
             </div>
             <div class="sim-section-body">
-                <!-- Hint pills -->
+              
                 <div class="hint-pills">
                     <div class="hint-pill" style="background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.2)">
                         <span class="tier-badge tier-1">Tier 1</span>
@@ -557,7 +532,7 @@ $activePage = 'simulation';
                     </div>
                 </div>
 
-                <!-- Add cert form -->
+                <!-- tambahkan sertip -->
                 <form method="POST">
                     <input type="hidden" name="add_single_cert" value="1">
                     <div class="add-item-form add-form-cert">
@@ -584,7 +559,7 @@ $activePage = 'simulation';
                     </div>
                 </form>
 
-                <!-- Saved certs list -->
+                <!-- simpan list sertip -->
                 <?php if ($certs): ?>
                 <div class="saved-items">
                     <?php foreach ($certs as $c):
@@ -624,7 +599,7 @@ $activePage = 'simulation';
             </div>
         </div>
 
-        <!-- ══ HITUNG SIMULASI ══ -->
+        <!--HITUNG SIMULASI -->
         <form method="POST">
             <input type="hidden" name="run_simulation" value="1">
             <div class="sim-submit-bar">
@@ -637,7 +612,7 @@ $activePage = 'simulation';
             </div>
         </form>
 
-    </div><!-- .sim-page -->
+    </div>
 </main>
 
 <script>

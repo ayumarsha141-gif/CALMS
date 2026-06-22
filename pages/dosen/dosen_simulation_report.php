@@ -7,7 +7,6 @@ requireRole('dosen');
 $user = getCurrentUser();
 $db   = getDB();
 
-// Semua simulasi dengan info mahasiswa
 $simulations = $db->query("
 SELECT
        u.fullname,
@@ -24,7 +23,6 @@ SELECT
     ORDER BY sim.created_at DESC
 ")->fetchAll();
 
-// Statistik
 $totalSim  = count($simulations);
 $avgProb   = $totalSim > 0 ? round(array_sum(array_column($simulations, 'prob')) / $totalSim) : 0;
 $highCount = count(array_filter($simulations, fn($s) => $s['prob'] >= 70));

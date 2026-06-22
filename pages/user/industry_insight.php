@@ -11,7 +11,6 @@ $stmt = $db->prepare("SELECT mp.*, u.fullname, u.email FROM mahasiswa_profiles m
 $stmt->execute([$user['id']]);
 $profile = $stmt->fetch();
 
-// Student's top skills
 $stmt = $db->prepare("
     SELECT s.skill_name, s.category, ss.student_level
     FROM student_skills ss
@@ -24,7 +23,6 @@ $topSkills = $stmt->fetchAll();
 
 $targetCareer = $profile['target_career'] ?? 'Software Engineer';
 
-// Static industry data (realistic Indonesia tech industry data)
 $industryTrends = [
     ['role' => 'Big Data Specialist', 'demand' => 94, 'avgSalary' => '12-25 jt', 'growth' => '+38%', 'color' => '#22d3ee', 'icon' => '🤖'],
     ['role' => 'FinTech Engineers',       'demand' => 91, 'avgSalary' => '13-28 jt', 'growth' => '+42%', 'color' => '#a78bfa', 'icon' => '☁️'],
@@ -140,7 +138,6 @@ $activePage = 'industry';
 
     <div class="insight-grid">
 
-        <!-- Demand Roles -->
         <div class="insight-card">
             <div class="insight-title">🔥 Demand Posisi Terpanas</div>
             <div class="insight-sub">Berdasarkan data job posting Indonesia 2026</div>
@@ -164,7 +161,6 @@ $activePage = 'industry';
             <?php endforeach; ?>
         </div>
 
-        <!-- Salary Range -->
         <div class="insight-card">
             <div class="insight-title">💰 Rentang Gaji per Level</div>
             <div class="insight-sub">Estimasi gaji software engineer (juta/bulan)</div>
@@ -190,8 +186,7 @@ $activePage = 'industry';
                 </div>
             </div>
         </div>
-
-        <!-- Tech Stack Demand -->
+        
         <div class="insight-card">
             <div class="insight-title">⚙️ Tech Stack Paling Dicari</div>
             <div class="insight-sub">% perusahaan yang mencantumkan skill ini di job posting</div>
@@ -211,7 +206,6 @@ $activePage = 'industry';
             <?php endforeach; ?>
         </div>
 
-        <!-- Top Companies -->
         <div class="insight-card">
             <div class="insight-title">🏢 Top Perusahaan Tech Indonesia</div>
             <div class="insight-sub">Yang paling aktif rekrut fresh graduate tech</div>
@@ -231,7 +225,6 @@ $activePage = 'industry';
 
     </div>
 
-    <!-- Bottom banner -->
     <div style="background:linear-gradient(135deg,rgba(34,211,238,0.08),rgba(167,139,250,0.08));border:1px solid rgba(34,211,238,0.2);border-radius:var(--radius-lg);padding:24px;text-align:center;">
         <div style="font-size:18px;font-weight:700;margin-bottom:6px;">🚀 Siap bersaing di industri?</div>
         <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;">Tingkatkan skill gap kamu dan coba simulasi rekrutmen untuk mengukur peluangmu.</p>

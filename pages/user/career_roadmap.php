@@ -7,7 +7,6 @@ requireRole('mahasiswa');
 $user = getCurrentUser();
 $db   = getDB();
 
-// ── Profile ──
 $stmt = $db->prepare("SELECT mp.*, u.fullname, u.email FROM mahasiswa_profiles mp JOIN users u ON u.id = mp.user_id WHERE mp.user_id = ?");
 $stmt->execute([$user['id']]);
 $profile   = $stmt->fetch();
@@ -24,17 +23,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_career'])) {
     }
 }
 
-// ── All roles [id => name] ──
 $allRoles = $db->query("SELECT id, position_name FROM career_positions ORDER BY position_name ASC")->fetchAll(PDO::FETCH_KEY_PAIR);
 
-// Normalize career
 if (!in_array($targetCareerName, $allRoles, true) && !empty($allRoles)) {
     $targetCareerName = current($allRoles);
     $db->prepare("UPDATE mahasiswa_profiles SET target_career = ? WHERE id = ?")->execute([$targetCareerName, $studentId]);
 }
 $careerId = array_search($targetCareerName, $allRoles, true);
 
-// ── Readiness dari student_skills ──
 $readiness = 0;
 try {
     $stmt = $db->prepare("
@@ -49,7 +45,6 @@ try {
     $readiness = $r ? (int)round((float)$r['pct']) : 0;
 } catch (PDOException $e) { $readiness = 0; }
 
-// ── Roadmap dari DB (roadmap_steps) ──
 $dbRoadmapSteps = [];
 if ($careerId) {
     $stmt = $db->prepare("
@@ -64,13 +59,11 @@ if ($careerId) {
     $dbRoadmapSteps = $stmt->fetchAll();
 }
 
-// ── Helper function ──
 function convertGradeToScore($grade) {
     $map = ['A'=>100,'A+'=>100,'A-'=>95,'B+'=>90,'B'=>80,'B-'=>75,'C+'=>70,'C'=>60,'C-'=>55,'D'=>40,'E'=>0];
     return $map[strtoupper($grade ?? '')] ?? 0;
 }
 
-// Cek apakah pakai mode DB atau static
 $useDBMode    = !empty($dbRoadmapSteps);
 $activePage   = 'roadmap';
 ?>
@@ -84,7 +77,7 @@ $activePage   = 'roadmap';
     <link rel="stylesheet" href="../../styles/dashboard.css">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        /* Career Selector */
+
         .career-selector{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:18px 22px;margin-bottom:24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
         .career-selector label{font-size:13px;color:var(--text-secondary);font-weight:500;flex-shrink:0}
         .career-select{background:var(--bg-secondary);border:1px solid var(--border);color:var(--text-primary);padding:8px 14px;border-radius:var(--radius-sm);font-size:13px;cursor:pointer;font-family:var(--font-sans);flex:1;min-width:200px}
@@ -92,13 +85,11 @@ $activePage   = 'roadmap';
         .career-change-btn{padding:8px 18px;background:var(--cyan);color:#0a0f1a;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:700;cursor:pointer}
         .career-change-btn:hover{opacity:.85}
 
-        /* Hero */
         .roadmap-hero{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;margin-bottom:28px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
         .roadmap-hero-left h2{font-size:20px;font-weight:700;margin-bottom:4px}
         .roadmap-hero-left p{font-size:13px;color:var(--text-secondary)}
         .readiness-pill{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:999px;background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.25);color:var(--cyan);font-weight:700;font-size:14px}
 
-        /* ── Static / Phase mode ── */
         .roadmap-timeline{position:relative}
         .roadmap-timeline::before{content:'';position:absolute;left:28px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,#22d3ee,#a78bfa,#f59e0b,#10b981);opacity:.3}
         .roadmap-phase{display:flex;gap:24px;margin-bottom:32px;position:relative}
@@ -114,7 +105,6 @@ $activePage   = 'roadmap';
         .task-list li{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--text-secondary)}
         .task-list li::before{content:'▸';flex-shrink:0;margin-top:1px}
 
-        /* ── DB Step mode ── */
         .step-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:20px;margin-bottom:15px}
         .step-header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);padding-bottom:10px;margin-bottom:10px}
         .step-title{font-size:16px;font-weight:700;color:var(--cyan)}
@@ -158,7 +148,6 @@ $activePage   = 'roadmap';
     <div class="alert-success-sm">✅ Target karir berhasil diperbarui!</div>
     <?php endif; ?>
 
-    <!-- Career Selector -->
     <form method="POST" class="career-selector">
         <label>🎯 Target Karir:</label>
         <select name="target_career" class="career-select">
@@ -169,7 +158,6 @@ $activePage   = 'roadmap';
         <button type="submit" name="change_career" class="career-change-btn">Ubah Roadmap</button>
     </form>
 
-    <!-- Hero -->
     <div class="roadmap-hero">
         <div class="roadmap-hero-left">
             <h2>Roadmap: <?= htmlspecialchars($targetCareerName) ?></h2>
@@ -189,7 +177,7 @@ $activePage   = 'roadmap';
     </div>
 
     <?php if ($useDBMode): ?>
-    <!-- ══ DB Mode: roadmap_steps dari database ══ -->
+
     <div style="display:flex;flex-direction:column;gap:0">
         <?php foreach ($dbRoadmapSteps as $step):
             $statusClass = ''; $statusText = ''; $showSaran = false;
@@ -237,7 +225,7 @@ $activePage   = 'roadmap';
     </div>
 
     <?php else: ?>
-    <!-- ══ Static Mode: template per karir ══ -->
+        
     <div class="roadmap-timeline">
         <?php foreach ($staticPhases as $i => $phase): ?>
         <div class="roadmap-phase">

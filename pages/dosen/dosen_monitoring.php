@@ -7,7 +7,7 @@ requireRole('dosen');
 $user = getCurrentUser();
 $db   = getDB();
 
-// Semua mahasiswa + readiness
+// disini semua mahasiswa + readiness
 $students = $db->query("
     SELECT u.fullname, mp.nim, mp.semester, mp.ipk, mp.target_career,
            ROUND(AVG(ss.student_level / s.industry_level * 100)) AS readiness,

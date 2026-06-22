@@ -81,7 +81,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// ── Data queries ──
 $sysConfig = [];
 $stmt = $db->query("SELECT config_key, config_val FROM system_config WHERE config_key LIKE 'saw_%'");
 if ($stmt) while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) $sysConfig[$row['config_key']] = $row['config_val'];
@@ -117,7 +116,7 @@ switch ($tab) {
     <link rel="stylesheet" href="../styles/style_patch.css">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        /* ── Main content layout fix ── */
+       
         .main-content {
             margin-left: 260px;
             padding: 32px 32px 48px;
@@ -129,7 +128,6 @@ switch ($tab) {
             .main-content { margin-left: 0; width: 100%; padding: 20px 16px 40px; }
         }
 
-        /* ── Tabs ── */
         .tabs {
             display: flex;
             gap: 0;
@@ -155,7 +153,6 @@ switch ($tab) {
         .tab-btn:hover { color: var(--text-primary); }
         .tab-btn.active { color: var(--cyan); border-bottom-color: var(--cyan); }
 
-        /* ── Forms ── */
         .form-group { margin-bottom: 16px; }
         .form-group label {
             display: block;
@@ -212,7 +209,6 @@ switch ($tab) {
         }
         .btn-danger:hover { background: rgba(239,68,68,.2); }
 
-        /* ── Section title ── */
         .section-title {
             font-size: 13px;
             font-weight: 700;
@@ -225,14 +221,12 @@ switch ($tab) {
         }
         .section-title:first-child { margin-top: 0; }
 
-        /* ── Grid helpers ── */
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
         @media (max-width: 640px) {
             .grid-2, .grid-3 { grid-template-columns: 1fr; }
         }
 
-        /* ── Master table ── */
         .master-table {
             width: 100%;
             border-collapse: collapse;
@@ -258,7 +252,6 @@ switch ($tab) {
         .master-table tr:last-child td { border-bottom: none; }
         .master-table tr:hover td { background: rgba(255,255,255,.02); }
 
-        /* ── Inline edit row ── */
         .inline-form {
             display: flex;
             gap: 8px;
@@ -269,7 +262,6 @@ switch ($tab) {
             min-width: 0;
         }
 
-        /* ── Add form box ── */
         .add-box {
             background: var(--bg-secondary);
             border: 1px dashed rgba(34,211,238,.25);
@@ -279,11 +271,9 @@ switch ($tab) {
             margin-bottom: 8px;
         }
 
-        /* ── Alerts ── */
         .alert-ok  { padding: 11px 16px; background: rgba(16,185,129,.08); color: #10b981; border: 1px solid rgba(16,185,129,.25); border-radius: 8px; margin-bottom: 20px; font-size: 13px; }
         .alert-err { padding: 11px 16px; background: rgba(239,68,68,.08); color: #ef4444; border: 1px solid rgba(239,68,68,.25); border-radius: 8px; margin-bottom: 20px; font-size: 13px; }
     
-           /* ── Responsive ── */
         @media (max-width: 900px) {
             .sg-content { grid-template-columns: 1fr; }
             .sg-stats   { grid-template-columns: repeat(2, 1fr); }
@@ -342,7 +332,7 @@ switch ($tab) {
 <?php include '../../includes/sidebar_admin.php'; ?>
 
 <main class="main-content">
-    <!-- Topbar -->
+   
     <div class="topbar">
         <div class="topbar-left">
             <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
@@ -369,7 +359,6 @@ switch ($tab) {
     <div class="alert-err">⚠️ <?= htmlspecialchars($_GET['error']) ?></div>
     <?php endif; ?>
 
-    <!-- TABS -->
     <div class="tabs">
         <a href="?tab=career"  class="tab-btn <?= $tab==='career'  ? 'active':'' ?>">🎯 Posisi Karir & Skill</a>
         <a href="?tab=roadmap" class="tab-btn <?= $tab==='roadmap' ? 'active':'' ?>">🗺️ Setup Roadmap</a>
@@ -381,7 +370,6 @@ switch ($tab) {
 
     <?php if ($tab === 'career'): ?>
 
-        <!-- Tambah posisi -->
         <div class="section-title">Tambah Posisi Karir Baru</div>
         <div class="add-box">
             <form method="POST">
@@ -394,7 +382,6 @@ switch ($tab) {
             </form>
         </div>
 
-        <!-- Daftar posisi -->
         <div class="section-title">Daftar Posisi Karir</div>
         <?php if (empty($careers)): ?>
         <p style="color:var(--text-muted);font-size:13px;padding:16px 0">Belum ada data posisi karir.</p>
@@ -644,7 +631,7 @@ switch ($tab) {
 
     <?php endif; ?>
 
-    </div><!-- .dash-panel -->
+    </div>
 </main>
 
 <script>

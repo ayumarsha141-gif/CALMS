@@ -77,7 +77,6 @@ $stmt = $db->prepare("SELECT sc.*,c.course_code,c.course_name,c.semester FROM st
 $stmt->execute([$studentId]);
 $historyCourses = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// ── Stats ──
 $gapHigh = $gapMid = $gapLow = 0;
 $totalReadiness = 0; $tracked = 0;
 foreach ($allSkills as $sk) {
@@ -135,7 +134,7 @@ $descMap = [
     <link rel="stylesheet" href="../../styles/style_patch.css">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        /* ── Stats grid: 3 kolom × 2 baris ── */
+
         .sg-stats {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -178,14 +177,12 @@ $descMap = [
             letter-spacing: 0.03em;
         }
 
-        /* ── Layout: skill cards 2 kolom ── */
         .sg-content {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 14px;
         }
 
-        /* ── Skill card ── */
         .skill-card {
             background: var(--bg-card);
             border: 1px solid var(--border);
@@ -202,24 +199,20 @@ $descMap = [
         .gap-mid  { background: rgba(245,158,11,.15);  color: #f59e0b; }
         .gap-high { background: rgba(239,68,68,.15);   color: #ef4444; }
 
-        /* ── Bar ── */
         .bar-wrap { position: relative; height: 8px; background: #1e293b; border-radius: 999px; margin-bottom: 12px; overflow: hidden; }
         .bar-fill { position: absolute; top: 0; left: 0; height: 100%; border-radius: 999px; transition: width .7s ease; }
 
-        /* ── Level boxes ── */
         .level-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px; }
         .level-box { background: #0f172a; border: 1px solid #1e293b; border-radius: 8px; padding: 10px; text-align: center; }
         .level-num { font-size: 20px; font-weight: 700; font-family: var(--font-mono); line-height: 1; }
         .level-sub { font-size: 10px; color: #64748b; margin-top: 3px; }
         .level-tag { font-size: 10px; color: #94a3b8; margin-top: 2px; }
 
-        /* ── Slider ── */
         .slider-row { display: flex; align-items: center; gap: 8px; }
         .slider-row label { font-size: 11px; color: var(--text-muted); white-space: nowrap; }
         .skill-range { flex: 1; accent-color: var(--cyan); }
         .skill-val { font-size: 12px; font-family: var(--font-mono); color: var(--cyan); min-width: 18px; text-align: right; }
 
-        /* ── Self assess box ── */
         .skill-explain {
             margin-bottom: 12px;
             padding: 10px 12px;
@@ -230,31 +223,25 @@ $descMap = [
         .ex-title { font-size: 10px; color: #94a3b8; margin-bottom: 3px; }
         .ex-progress { font-size: 12px; font-weight: 600; color: #22d3ee; }
 
-        /* ── Legend ── */
         .legend-row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
         .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-muted); }
         .legend-dot { width: 20px; height: 6px; border-radius: 3px; }
 
-        /* ── Buttons ── */
         .save-btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 26px; background: var(--cyan); color: #0a0f1a; border: none; border-radius: 999px; font-size: 13px; font-weight: 700; cursor: pointer; }
         .save-btn:hover { opacity: .85; }
         .btn-plain { padding: 8px 18px; background: transparent; border: 1px solid var(--border); border-radius: 999px; color: var(--text-secondary); font-size: 12px; cursor: pointer; font-family: inherit; }
         .btn-plain:hover { border-color: var(--border-hover); }
 
-        /* ── Alert ── */
         .alert-success { background: rgba(16,185,129,.08); border: 1px solid rgba(16,185,129,.25); color: #10b981; padding: 10px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 13px; }
 
-        /* ── Save row ── */
         .form-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); }
         .form-footer-note { font-size: 12px; color: var(--text-muted); }
 
-        /* ── Grade pills ── */
         .gr-a { background: rgba(16,185,129,.15); color: #10b981; }
         .gr-b { background: rgba(34,211,238,.12); color: var(--cyan); }
         .gr-c { background: rgba(245,158,11,.12); color: #f59e0b; }
         .gr-d { background: rgba(239,68,68,.12); color: #ef4444; }
 
-        /* ── Responsive ── */
         @media (max-width: 900px) {
             .sg-content { grid-template-columns: 1fr; }
             .sg-stats   { grid-template-columns: repeat(2, 1fr); }
@@ -313,7 +300,6 @@ $descMap = [
 
 <main class="main-content">
 
-    <!-- ── Topbar ── -->
     <div class="topbar">
         <div class="topbar-left">
             <button class="sidebar-toggle" id="sidebarToggle">
@@ -336,7 +322,6 @@ $descMap = [
     <div class="alert-success">✅ Data berhasil disimpan.</div>
     <?php endif; ?>
 
-    <!-- ══ STATS: 3 kolom × 2 baris ══ -->
     <div class="sg-stats">
 
         <div class="sg-stat">
@@ -389,13 +374,11 @@ $descMap = [
 
     </div>
 
-    <!-- ══ LEGEND ══ -->
     <div class="legend-row">
         <div class="legend-item"><div class="legend-dot" style="background:var(--cyan)"></div>Level kamu</div>
         <div class="legend-item"><div class="legend-dot" style="background:#334155"></div>Target industri</div>
     </div>
 
-    <!-- ══ SKILL CARDS ══ -->
     <form method="POST" id="skillForm">
         <input type="hidden" name="save_skills" value="1">
         <input type="hidden" name="ipk_value" id="ipkHidden" value="<?= htmlspecialchars($profile['ipk'] ?? '') ?>">

@@ -144,7 +144,6 @@ $activePage = 'admin_dashboard';
 
         .empty-box { text-align: center; padding: 32px; color: var(--text-muted); font-size: 13px; }
     
-           /* ── Responsive ── */
         @media (max-width: 900px) {
             .sg-content { grid-template-columns: 1fr; }
             .sg-stats   { grid-template-columns: repeat(2, 1fr); }
@@ -204,7 +203,6 @@ $activePage = 'admin_dashboard';
 
 <main class="main-content">
 
-    <!-- Topbar -->
     <div class="topbar">
         <div class="topbar-left">
             <button class="sidebar-toggle" id="sidebarToggle">
@@ -223,7 +221,6 @@ $activePage = 'admin_dashboard';
         </div>
     </div>
 
-    <!-- ── Stat Cards: 4 kolom ── -->
     <div class="stat-grid-admin">
 
         <div class="stat-card-adm">
@@ -255,7 +252,6 @@ $activePage = 'admin_dashboard';
 
     </div>
 
-    <!-- ── Row 1: Mahasiswa Terbaru + Top Readiness ── -->
     <div class="admin-grid">
 
         <div class="dash-panel">
@@ -304,7 +300,6 @@ $activePage = 'admin_dashboard';
 
     </div>
 
-    <!-- ── Row 2: Simulasi Terbaru + Distribusi Karir ── -->
     <div class="admin-grid">
 
         <div class="dash-panel">
@@ -356,7 +351,6 @@ $activePage = 'admin_dashboard';
 
     </div>
 
-    <!-- ── Row 3: Industry Trends + Avg Skill Gap ── -->
     <div class="admin-grid-3">
 
         <div class="dash-panel">

@@ -7,10 +7,10 @@ requireRole('dosen');
 $user = getCurrentUser();
 $db   = getDB();
 
-// Total mahasiswa
+// untuk total mahasiswa
 $totalMhs = $db->query("SELECT COUNT(*) FROM users WHERE role = 'mahasiswa' AND is_active = 1")->fetchColumn();
 
-// Rata-rata readiness semua mahasiswa
+// ini untuk rata-rata readiness semua mahasiswa
 $avgReady = $db->query("
     SELECT AVG(sub.avg_level) FROM (
         SELECT AVG(ss.student_level / s.industry_level * 100) AS avg_level
@@ -44,7 +44,7 @@ $topStudents = $db->query("
     LIMIT 5
 ")->fetchAll();
 
-// Mahasiswa dengan readiness terendah (perlu perhatian)
+// ini mahasiswa dengan readiness terendah 
 $lowStudents = $db->query("
     SELECT
         u.fullname,
@@ -68,7 +68,7 @@ $lowStudents = $db->query("
     LIMIT 5
 ")->fetchAll();
 
-// Distribusi target career
+// ini distribusi target career
 $careerDist = $db->query("
     SELECT target_career, COUNT(*) AS total
     FROM mahasiswa_profiles
@@ -78,7 +78,7 @@ $careerDist = $db->query("
     LIMIT 6
 ")->fetchAll();
 
-// Skill paling lemah (gap tertinggi rata-rata)
+// skill paling lemah (gap tertinggi rata-rata)
 $weakSkills = $db->query("
     SELECT s.skill_name, s.category,
            ROUND(AVG(s.industry_level - ss.student_level), 1) AS avg_gap,
@@ -90,7 +90,7 @@ $weakSkills = $db->query("
     LIMIT 5
 ")->fetchAll();
 
-// Simulasi terakhir per mahasiswa (ringkasan)
+// ini simulasi terakhir per mahasiswa (ringkasan)
 $simSummary = $db->query("
     SELECT
         u.fullname,
@@ -105,7 +105,7 @@ $simSummary = $db->query("
     LIMIT 8
 ")->fetchAll();
 
-// Mahasiswa belum isi skill
+// mahasiswa belum isi skill
 $noSkillMhs = $db->query("
     SELECT COUNT(*) FROM mahasiswa_profiles mp
     WHERE mp.id NOT IN (SELECT DISTINCT student_id FROM student_skills)
@@ -123,7 +123,7 @@ $activePageDosen = 'dashboard';
     <link rel="stylesheet" href="../../styles/dashboard.css">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        /* Dosen theme — purple accent */
+       
         .dosen-accent { color: #a78bfa; }
         .sidebar-nav a.active { background:rgba(167,139,250,0.1); color:#a78bfa; }
         .sidebar-nav a:hover  { background:rgba(167,139,250,0.07); color:var(--text-primary); }
@@ -135,16 +135,13 @@ $activePageDosen = 'dashboard';
             color:#a78bfa; font-size:11px; font-weight:700; letter-spacing:.5px;
         }
 
-        /* Overview cards */
         .overview-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
         @media(max-width:1100px){ .overview-grid{ grid-template-columns:repeat(2,1fr); } }
         @media(max-width:600px) { .overview-grid{ grid-template-columns:1fr 1fr; } }
 
-        /* Two-col layout */
         .dosen-grid { display:grid; grid-template-columns:1fr 360px; gap:20px; align-items:start; }
         @media(max-width:1100px){ .dosen-grid{ grid-template-columns:1fr; } }
 
-        /* Student table */
         .student-table { width:100%; border-collapse:collapse; }
         .student-table th {
             font-size:11px; text-transform:uppercase; letter-spacing:1px;
@@ -163,7 +160,6 @@ $activePageDosen = 'dashboard';
         .readiness-mini-bar { width:60px; height:5px; background:#1e293b; border-radius:999px; overflow:hidden; flex-shrink:0; }
         .readiness-mini-fill { height:100%; border-radius:999px; }
 
-        /* Alert box */
         .alert-dosen {
             background:rgba(245,158,11,.08); border:1px solid rgba(245,158,11,.2);
             border-radius:var(--radius-md); padding:14px 18px;
@@ -171,7 +167,6 @@ $activePageDosen = 'dashboard';
             display:flex; align-items:center; gap:10px;
         }
 
-        /* Career dist */
         .career-dist-row { display:flex; flex-direction:column; gap:8px; }
         .career-dist-item { display:flex; flex-direction:column; gap:4px; }
         .career-dist-meta { display:flex; justify-content:space-between; font-size:12px; }
@@ -180,14 +175,12 @@ $activePageDosen = 'dashboard';
         .career-bar-track { height:6px; background:#1e293b; border-radius:999px; overflow:hidden; }
         .career-bar-fill  { height:100%; border-radius:999px; background:#a78bfa; }
 
-        /* Weak skill row */
         .weak-skill-row { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 0; border-bottom:1px solid rgba(255,255,255,.04); }
         .weak-skill-row:last-child { border-bottom:none; }
         .weak-skill-name { font-size:13px; font-weight:500; }
         .weak-skill-right { display:flex; align-items:center; gap:8px; }
         .gap-num { font-family:var(--font-mono); font-size:12px; color:#ef4444; }
 
-        /* Sim table */
         .prob-pill {
             font-size:11px; font-family:var(--font-mono); font-weight:700;
             padding:2px 8px; border-radius:999px;
@@ -223,7 +216,6 @@ $activePageDosen = 'dashboard';
     </div>
     <?php endif; ?>
 
-    <!-- Overview Stats -->
     <div class="overview-grid">
         <div class="stat-card">
             <div class="stat-icon stat-icon--purple">
@@ -270,10 +262,9 @@ $activePageDosen = 'dashboard';
     </div>
 
     <div class="dosen-grid">
-        <!-- LEFT col -->
+       
         <div style="display:flex;flex-direction:column;gap:20px;">
 
-            <!-- Top students -->
             <div class="dash-panel">
                 <div class="panel-header">
                     <div>
@@ -316,7 +307,6 @@ $activePageDosen = 'dashboard';
                 <?php endif; ?>
             </div>
 
-            <!-- Low students - perlu perhatian -->
             <div class="dash-panel">
                 <div class="panel-header">
                     <div>
@@ -359,7 +349,6 @@ $activePageDosen = 'dashboard';
                 <?php endif; ?>
             </div>
 
-            <!-- Simulation results -->
             <div class="dash-panel">
                 <div class="panel-header">
                     <div>
@@ -404,10 +393,8 @@ $activePageDosen = 'dashboard';
 
         </div>
 
-        <!-- RIGHT col -->
         <div style="display:flex;flex-direction:column;gap:16px;">
 
-            <!-- Career distribution -->
             <div class="dash-panel">
                 <div class="panel-header">
                     <div>
@@ -436,7 +423,6 @@ $activePageDosen = 'dashboard';
                 <?php endif; ?>
             </div>
 
-            <!-- Weak skills -->
             <div class="dash-panel">
                 <div class="panel-header">
                     <div>
@@ -462,7 +448,6 @@ $activePageDosen = 'dashboard';
                 <?php endif; ?>
             </div>
 
-            <!-- Quick info -->
             <div class="dash-panel" style="background:rgba(167,139,250,0.05);border-color:rgba(167,139,250,0.2);">
                 <h2 class="panel-title" style="margin-bottom:14px;">ℹ️ Akun Dosen</h2>
                 <div style="font-size:13px;color:var(--text-secondary);line-height:1.7;">

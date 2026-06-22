@@ -7,7 +7,6 @@ requireRole('mahasiswa');
 $user = getCurrentUser();
 $db   = getDB();
 
-// Ambil profil
 $stmt = $db->prepare("
     SELECT mp.*, u.fullname, u.email
     FROM mahasiswa_profiles mp
@@ -17,10 +16,8 @@ $stmt = $db->prepare("
 $stmt->execute([$user['id']]);
 $profile = $stmt->fetch();
 
-// Ambil daftar career dari tabel career_positions
 $careerPositions = $db->query("SELECT position_name FROM career_positions ORDER BY position_name ASC")->fetchAll(PDO::FETCH_COLUMN);
 
-// Ambil skill mahasiswa
 $stmt = $db->prepare("
     SELECT ss.skill_id, ss.student_level, s.skill_name, s.category, s.industry_level
     FROM student_skills ss
@@ -32,7 +29,6 @@ $stmt = $db->prepare("
 $stmt->execute([$user['id']]);
 $mySkills = $stmt->fetchAll();
 
-// Ambil sertifikasi milik mahasiswa
 $stmt = $db->prepare("
     SELECT * FROM student_certifications
     WHERE student_id = ? AND status = 'owned'
@@ -41,7 +37,6 @@ $stmt = $db->prepare("
 $stmt->execute([$profile['id']]);
 $myCerts = $stmt->fetchAll();
 
-// Ambil proyek mahasiswa
 $stmt = $db->prepare("
     SELECT * FROM student_projects
     WHERE student_id = ?
@@ -57,14 +52,12 @@ if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 
-// Handle POST update profil
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
         $error = 'Invalid request. Silakan refresh halaman.';
     } else {
         $action = $_POST['action'] ?? '';
 
-        // ── Update info dasar ──
         if ($action === 'update_profile') {
             $fullname     = substr(trim($_POST['fullname'] ?? ''), 0, 255);
             $semester     = intval($_POST['semester'] ?? 1);
@@ -94,33 +87,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['fullname'] = $fullname;
                 $success = 'Profil berhasil diperbarui.';
 
-                // Refresh data
                 $stmt = $db->prepare("SELECT mp.*, u.fullname, u.email FROM mahasiswa_profiles mp JOIN users u ON u.id = mp.user_id WHERE mp.user_id = ?");
                 $stmt->execute([$user['id']]);
                 $profile = $stmt->fetch();
             }
         }
 
-        // ── Simpan skill ──
         elseif ($action === 'update_skills') {
             $skillLevels = $_POST['skill_level'] ?? [];
             $db->beginTransaction();
             try {
-                // Hapus skill lama lalu insert ulang
+            
                 $stmt = $db->prepare("DELETE FROM student_skills WHERE student_id = ?");
                 $stmt->execute([$profile['id']]);
 
                 $stmt = $db->prepare("INSERT INTO student_skills (student_id, skill_id, student_level) VALUES (?, ?, ?)");
                 foreach ($skillLevels as $skillId => $level) {
                     $level = intval($level);
-                    if ($level > 0) { // hanya simpan skill yang dikuasai
+                    if ($level > 0) { 
                         $stmt->execute([$profile['id'], intval($skillId), min(10, $level)]);
                     }
                 }
                 $db->commit();
                 $success = 'Skill berhasil disimpan.';
 
-                // Refresh
                 $stmt = $db->prepare("SELECT ss.skill_id, ss.student_level, s.skill_name, s.category, s.industry_level FROM student_skills ss JOIN skills s ON s.id = ss.skill_id JOIN mahasiswa_profiles mp ON mp.id = ss.student_id WHERE mp.user_id = ? ORDER BY s.category, s.skill_name");
                 $stmt->execute([$user['id']]);
                 $mySkills = $stmt->fetchAll();
@@ -130,7 +120,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        // ── Tambah sertifikasi ──
         elseif ($action === 'add_cert') {
             $certName = substr(trim($_POST['cert_name'] ?? ''), 0, 255);
             $provider = substr(trim($_POST['cert_provider'] ?? ''), 0, 100);
@@ -153,7 +142,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        // ── Hapus sertifikasi ──
         elseif ($action === 'delete_cert') {
             $certId = intval($_POST['cert_id'] ?? 0);
             $stmt = $db->prepare("DELETE FROM student_certifications WHERE id = ? AND student_id = ?");
@@ -165,7 +153,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $myCerts = $stmt->fetchAll();
         }
 
-        // ── Tambah proyek ──
         elseif ($action === 'add_project') {
             $projName = substr(trim($_POST['project_name'] ?? ''), 0, 255);
             $desc     = substr(trim($_POST['description'] ?? ''), 0, 1000);
@@ -190,7 +177,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        // ── Hapus proyek ──
         elseif ($action === 'delete_project') {
             $projId = intval($_POST['project_id'] ?? 0);
             $stmt = $db->prepare("DELETE FROM student_projects WHERE id = ? AND student_id = ?");
@@ -204,7 +190,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Ambil semua skill katalog untuk form
 $skillsAll = $db->query("SELECT * FROM skills ORDER BY category, skill_name")->fetchAll();
 $savedSkillMap = array_column($mySkills, 'student_level', 'skill_id');
 
@@ -522,7 +507,6 @@ $activePage = 'profile';
 
     <div class="profile-grid">
 
-        <!-- ── Kolom Kiri: Info Ringkas ── -->
         <div>
             <div class="dash-panel">
                 <div class="profile-avatar-wrap">
@@ -585,7 +569,6 @@ $activePage = 'profile';
             </div>
         </div>
 
-        <!-- ── Kolom Kanan: Tab Panel ── -->
         <div class="dash-panel">
 
             <div class="tab-bar">
@@ -595,7 +578,6 @@ $activePage = 'profile';
                 <button class="tab-btn" data-tab="projects">Portofolio</button>
             </div>
 
-            <!-- Tab: Info Dasar -->
             <div class="tab-panel active" id="tab-info">
                 <form method="POST">
                     <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
@@ -656,7 +638,6 @@ $activePage = 'profile';
                 </form>
             </div>
 
-            <!-- Tab: Skill -->
             <div class="tab-panel" id="tab-skills">
                 <form method="POST">
                     <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
@@ -708,7 +689,6 @@ $activePage = 'profile';
                 </form>
             </div>
 
-            <!-- Tab: Sertifikasi -->
             <div class="tab-panel" id="tab-certs">
                 <?php if (empty($myCerts)): ?>
                     <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">Belum ada sertifikasi. Tambahkan sertifikasi yang kamu miliki.</p>
@@ -766,7 +746,6 @@ $activePage = 'profile';
                 </div>
             </div>
 
-            <!-- Tab: Portofolio -->
             <div class="tab-panel" id="tab-projects">
                 <?php if (empty($myProjects)): ?>
                     <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">Belum ada proyek. Tambahkan portofolio proyekmu.</p>
@@ -838,17 +817,15 @@ $activePage = 'profile';
                 </div>
             </div>
 
-        </div><!-- .dash-panel -->
-    </div><!-- .profile-grid -->
+        </div>
+    </div>
 </main>
 
 <script>
-// Sidebar toggle
 const toggle  = document.getElementById('sidebarToggle');
 const sidebar = document.getElementById('sidebar');
 toggle?.addEventListener('click', () => sidebar.classList.toggle('open'));
 
-// Tab switching
 document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', function() {
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -858,7 +835,6 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     });
 });
 
-// Category filter untuk tabel skill
 document.querySelectorAll('.cat-btn').forEach(btn => {
     btn.addEventListener('click', function() {
         document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));

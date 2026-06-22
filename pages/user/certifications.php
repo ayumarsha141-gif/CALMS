@@ -13,7 +13,7 @@ $profile = $stmt->fetch();
 $studentId = $profile['id'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Add cert
+   
     if (isset($_POST['add_cert'])) {
         $certName = trim($_POST['cert_name'] ?? '');
         $provider = trim($_POST['provider'] ?? '');
@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Location: certifications.php?saved=cert&tab=my-certs');
         exit;
     }
-    // Delete cert
+   
     if (isset($_POST['delete_cert'])) {
         $certId = (int)$_POST['cert_id'];
         $stmt = $db->prepare("DELETE FROM student_certifications WHERE id = ? AND student_id = ?");
@@ -37,7 +37,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Add project
     if (isset($_POST['add_project'])) {
         $name  = trim($_POST['project_name'] ?? '');
         $scale = $_POST['project_scale'] ?? 'kecil';
@@ -46,11 +45,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($name !== '') {
             $score = $scale === 'besar' ? 40 : 20;
             $stmt = $db->prepare("INSERT INTO student_projects (student_id, project_name, scale, score, description, created_at) VALUES (?,?,?,?,?,?)");
-            // Try with description col first, fallback without
+           
             try {
                 $stmt->execute([$studentId, $name, $scale, $score, $desc, $date ?: date('Y-m-d')]);
             } catch (\PDOException $e) {
-                // Fallback jika kolom description/created_at belum ada
+               
                 $db->prepare("INSERT INTO student_projects (student_id, project_name, scale, score) VALUES (?,?,?,?)")
                     ->execute([$studentId, $name, $scale, $score]);
             }
@@ -58,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Location: certifications.php?saved=project&tab=my-projects');
         exit;
     }
-    // Delete project
+   
     if (isset($_POST['delete_project'])) {
         $projId = (int)$_POST['project_id'];
         $db->prepare("DELETE FROM student_projects WHERE id = ? AND student_id = ?")->execute([$projId, $studentId]);
@@ -67,25 +66,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// ── Data: My certs ──
 $stmt = $db->prepare("SELECT * FROM student_certifications WHERE student_id = ? ORDER BY tier ASC, obtained_date DESC");
 $stmt->execute([$studentId]);
 $myCerts = $stmt->fetchAll();
 $myOwnedNames = array_column(array_filter($myCerts, fn($c) => $c['status']==='owned'), 'cert_name');
 
-// ── Data: Cert catalog ──
 $catalog = [];
 try {
     $stmt = $db->query("SELECT * FROM certifications ORDER BY tier ASC, score DESC");
     $catalog = $stmt->fetchAll();
-} catch (\PDOException $e) { /* tabel mungkin belum ada */ }
+} catch (\PDOException $e) {  }
 
-// ── Data: My projects ──
 $stmt = $db->prepare("SELECT * FROM student_projects WHERE student_id = ? ORDER BY id DESC");
 $stmt->execute([$studentId]);
 $myProjects = $stmt->fetchAll();
 
-// Active tab dari URL
 $activeTab = $_GET['tab'] ?? 'my-certs';
 $validTabs = ['my-certs','catalog','add-cert','my-projects','add-project'];
 if (!in_array($activeTab, $validTabs)) $activeTab = 'my-certs';
@@ -102,7 +97,7 @@ $activePage = 'certifications';
     <link rel="stylesheet" href="../../styles/dashboard.css">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        /* ══ Tab groups ══ */
+        
         .tab-groups { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; align-items: center; }
         .tab-group-label { font-size: 11px; color: #475569; text-transform: uppercase; letter-spacing: .08em; font-weight: 600; margin-right: 4px; }
         .tab-strip { display: flex; gap: 3px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 4px; }
@@ -114,12 +109,12 @@ $activePage = 'certifications';
         .cert-tab:hover:not(.active) { background: rgba(255,255,255,.05); color: var(--text-secondary); }
         .tab-divider { width: 1px; height: 28px; background: var(--border); margin: 0 4px; align-self: center; }
 
-        /* ══ Sections ══ */
+       
         .cert-section { display: none; animation: fadeIn .2s ease; }
         .cert-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* ══ Cert catalog grid ══ */
+       
         .cert-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px,1fr)); gap: 16px; }
         .cert-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 20px; transition: all .2s; }
         .cert-card:hover { border-color: var(--border-hover); transform: translateY(-2px); }
@@ -135,7 +130,6 @@ $activePage = 'certifications';
         .cert-score-bar { height: 4px; background: var(--border); border-radius: 999px; margin-top: 10px; overflow: hidden; }
         .cert-score-fill { height: 100%; border-radius: 999px; }
 
-        /* ══ Add form card ══ */
         .add-form-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 28px; margin-bottom: 24px; }
         .add-form-title { font-size: 15px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
         .add-form-title-icon { width: 32px; height: 32px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
@@ -148,7 +142,6 @@ $activePage = 'certifications';
         .form-input-proj:focus { border-color: #fbbf24; box-shadow: 0 0 0 3px rgba(251,191,36,.08); }
         .form-textarea { min-height: 80px; resize: vertical; }
 
-        /* ══ Btn ══ */
         .btn-add-cert { font-size: 12px; padding: 7px 16px; background: rgba(34,211,238,.08); border: 1px solid rgba(34,211,238,.2); color: var(--cyan); border-radius: 999px; cursor: pointer; transition: all .2s; font-family: 'Space Grotesk', sans-serif; font-weight: 600; }
         .btn-add-cert:hover { background: rgba(34,211,238,.15); border-color: rgba(34,211,238,.4); }
         .btn-submit-cert { padding: 11px 26px; background: linear-gradient(135deg,#22d3ee,#3b82f6); border: none; color: #000; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Space Grotesk', sans-serif; transition: all .2s; }
@@ -157,7 +150,6 @@ $activePage = 'certifications';
         .btn-submit-proj:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(251,191,36,.3); }
         .owned-badge { font-size: 11px; padding: 6px 12px; background: rgba(16,185,129,.1); color: #10b981; border-radius: 999px; border: 1px solid rgba(16,185,129,.2); }
 
-        /* ══ My rows (cert & project) ══ */
         .my-row { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px; margin-bottom: 10px; display: flex; align-items: center; gap: 16px; transition: all .2s; }
         .my-row:hover { border-color: var(--border-hover); transform: translateX(2px); }
         .my-row-icon { width: 42px; height: 42px; border-radius: 11px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1.1rem; }
@@ -172,25 +164,20 @@ $activePage = 'certifications';
         .scale-besar { background: rgba(251,191,36,.12); color: #fbbf24; }
         .scale-kecil { background: rgba(148,163,184,.1); color: #94a3b8; }
 
-        /* ══ Delete btn ══ */
         .btn-delete { background: rgba(239,68,68,.07); border: 1px solid rgba(239,68,68,.18); color: #ef4444; padding: 7px 14px; border-radius: 999px; font-size: 11px; cursor: pointer; font-family: 'Space Grotesk', sans-serif; font-weight: 600; transition: all .2s; display: inline-flex; align-items: center; gap: 5px; }
         .btn-delete:hover { background: rgba(239,68,68,.15); border-color: rgba(239,68,68,.35); }
 
-        /* ══ Empty state ══ */
         .empty-state { text-align: center; padding: 48px 20px; color: var(--text-muted); }
         .empty-state svg { margin: 0 auto 14px; display: block; opacity: .25; }
         .empty-state p { font-size: 14px; margin-bottom: 16px; }
 
-        /* ══ Alert ══ */
         .alert-success { background: rgba(16,185,129,.1); border: 1px solid rgba(16,185,129,.3); color: #10b981; padding: 12px 18px; border-radius: 10px; margin-bottom: 20px; font-size: 13px; }
         .alert-del { background: rgba(245,158,11,.08); border: 1px solid rgba(245,158,11,.25); color: #f59e0b; padding: 12px 18px; border-radius: 10px; margin-bottom: 20px; font-size: 13px; }
         .alert-proj { background: rgba(251,191,36,.08); border: 1px solid rgba(251,191,36,.25); color: #fbbf24; padding: 12px 18px; border-radius: 10px; margin-bottom: 20px; font-size: 13px; }
 
-        /* ══ Stats bar ══ */
         .stats-bar { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
         .stat-chip { padding: 8px 16px; border-radius: 10px; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 7px; }
 
-        /* ══ Delete modal ══ */
         .modal-overlay { position: fixed; inset: 0; z-index: 9999; background: rgba(5,8,20,.75); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity .25s; }
         .modal-overlay.open { opacity: 1; pointer-events: all; }
         .modal-box { background: #0d1424; border: 1px solid rgba(239,68,68,.25); border-radius: 20px; padding: 32px 28px 24px; max-width: 400px; width: 90%; text-align: center; transform: scale(.92) translateY(12px); transition: transform .28s cubic-bezier(.34,1.56,.64,1); box-shadow: 0 24px 60px rgba(0,0,0,.6); }
@@ -205,7 +192,6 @@ $activePage = 'certifications';
         .modal-btn-delete { padding: 10px 28px; background: linear-gradient(135deg,#ef4444,#dc2626); border: none; color: #fff; border-radius: 999px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Space Grotesk', sans-serif; transition: all .2s; box-shadow: 0 4px 15px rgba(239,68,68,.35); }
         .modal-btn-delete:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(239,68,68,.45); }
 
-        /* ══ Section headers ══ */
         .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
         .section-title-sm { font-size: 13px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: .07em; }
 
@@ -216,7 +202,6 @@ $activePage = 'certifications';
 
 <?php include '../../includes/sidebar.php'; ?>
 
-<!-- Delete Modal -->
 <div class="modal-overlay" id="deleteModal" role="dialog" aria-modal="true">
     <div class="modal-box">
         <div class="modal-icon">
@@ -258,7 +243,6 @@ $activePage = 'certifications';
         </div>
     </div>
 
-    <!-- Alerts -->
     <?php if (isset($_GET['saved'])): ?>
     <div class="alert-success">✅ <?= $_GET['saved'] === 'cert' ? 'Sertifikasi' : 'Proyek' ?> berhasil ditambahkan!</div>
     <?php endif; ?>
@@ -266,9 +250,8 @@ $activePage = 'certifications';
     <div class="alert-del">🗑️ <?= $_GET['deleted'] === 'cert' ? 'Sertifikasi' : 'Proyek' ?> berhasil dihapus.</div>
     <?php endif; ?>
 
-    <!-- ══ TABS ══ -->
     <div class="tab-groups">
-        <!-- Sertifikasi group -->
+      
         <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
             <span class="tab-group-label" style="color:#22d3ee">🏆 Sertifikasi</span>
             <div class="tab-strip">
@@ -284,7 +267,6 @@ $activePage = 'certifications';
 
         <div class="tab-divider"></div>
 
-        <!-- Portofolio group -->
         <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
             <span class="tab-group-label" style="color:#fbbf24">📁 Portofolio</span>
             <div class="tab-strip">
@@ -296,9 +278,7 @@ $activePage = 'certifications';
         </div>
     </div>
 
-    <!-- ══════════════════════════════════════
-         TAB: MY CERTS
-    ══════════════════════════════════════ -->
+   <!-- my sertif-->
     <div class="cert-section <?= $activeTab==='my-certs'?'active':'' ?>" id="my-certs">
         <?php if (empty($myCerts)): ?>
         <div class="empty-state">
@@ -354,9 +334,7 @@ $activePage = 'certifications';
         <?php endif; ?>
     </div>
 
-    <!-- ══════════════════════════════════════
-         TAB: CATALOG
-    ══════════════════════════════════════ -->
+    <!-- KATALOG-->
     <?php if (!empty($catalog)): ?>
     <div class="cert-section <?= $activeTab==='catalog'?'active':'' ?>" id="catalog">
         <?php
@@ -400,9 +378,7 @@ $activePage = 'certifications';
     </div>
     <?php endif; ?>
 
-    <!-- ══════════════════════════════════════
-         TAB: ADD CERT
-    ══════════════════════════════════════ -->
+    <!-- ADD CERT-->
     <div class="cert-section <?= $activeTab==='add-cert'?'active':'' ?>" id="add-cert">
         <div class="add-form-card">
             <div class="add-form-title">
@@ -446,9 +422,7 @@ $activePage = 'certifications';
         </div>
     </div>
 
-    <!-- ══════════════════════════════════════
-         TAB: MY PROJECTS
-    ══════════════════════════════════════ -->
+    <!-- MY PROJECTS-->
     <div class="cert-section <?= $activeTab==='my-projects'?'active':'' ?>" id="my-projects">
         <?php if (empty($myProjects)): ?>
         <div class="empty-state">
@@ -497,16 +471,14 @@ $activePage = 'certifications';
         <?php endif; ?>
     </div>
 
-    <!-- ══════════════════════════════════════
-         TAB: ADD PROJECT
-    ══════════════════════════════════════ -->
+    <!-- ADD PROJECT-->
     <div class="cert-section <?= $activeTab==='add-project'?'active':'' ?>" id="add-project">
         <div class="add-form-card" style="border-color:rgba(251,191,36,.15)">
             <div class="add-form-title">
                 <div class="add-form-title-icon" style="background:rgba(251,191,36,.1)">📁</div>
                 Tambah Proyek Portofolio
             </div>
-            <!-- Hint -->
+          
             <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
                 <div style="padding:8px 14px;border-radius:9px;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);font-size:12px;color:#94a3b8">
                     <strong style="color:#fbbf24">Besar</strong> — TA, Proyek Client, Teamwork = <strong style="color:#fbbf24">40 poin</strong>
@@ -546,24 +518,22 @@ $activePage = 'certifications';
 
 <script src="../../script/main.js"></script>
 <script>
-// Sidebar
+
 document.getElementById('sidebarToggle')?.addEventListener('click', () => {
     document.getElementById('sidebar').classList.toggle('open');
 });
 
-// Tabs
 function switchTab(sectionId, btn) {
     document.querySelectorAll('.cert-section').forEach(s => s.classList.remove('active'));
     document.querySelectorAll('.cert-tab').forEach(t => t.classList.remove('active'));
     document.getElementById(sectionId)?.classList.add('active');
     btn?.classList.add('active');
-    // Update URL without reload
+    
     const url = new URL(window.location);
     url.searchParams.set('tab', sectionId);
     window.history.replaceState({}, '', url);
 }
 
-// Delete Modal
 const deleteModal     = document.getElementById('deleteModal');
 const modalTitle      = document.getElementById('modalTitle');
 const modalSub        = document.getElementById('modalSub');
@@ -574,7 +544,7 @@ const modalDeleteBtn  = document.getElementById('modalDeleteBtn');
 const modalCancel     = document.getElementById('modalCancel');
 
 function openDeleteModal(type, id, name) {
-    // Reset hidden inputs
+   
     modalCertId.value    = '';
     modalProjectId.value = '';
     modalDeleteBtn.name  = '';

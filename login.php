@@ -20,7 +20,6 @@ $DOSEN_ACCOUNTS = [
     ['email' => 'dosen8@calms.ac.id', 'password' => 'dosen123', 'name' => 'Fitri Bimantoro, ST.,M.Kom.'],
 ];
 
-// Akun admin hardcoded
 $ADMIN_ACCOUNTS = [
     ['email' => 'admin@calms.ac.id', 'password' => 'admin123', 'name' => 'Administrator CALMS'],
 ];
@@ -55,7 +54,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        // Cek dosen
         foreach ($DOSEN_ACCOUNTS as $dosen) {
             if ($dosen['email'] === $email && $dosen['password'] === $password) {
                 $_SESSION['user_id']  = 'dosen_' . md5($email);
@@ -67,7 +65,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        // Cek mahasiswa di DB
         $db   = getDB();
         $stmt = $db->prepare("SELECT id, fullname, email, password, role FROM users WHERE email = ? AND is_active = 1");
         $stmt->execute([$email]);

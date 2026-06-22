@@ -41,7 +41,6 @@ $skillReport = $db->query("
     ORDER BY avg_gap DESC
 ")->fetchAll();
 
-// Kelompokkan per kategori
 $byCategory = [];
 foreach ($skillReport as $sk) {
     $byCategory[$sk['category']][] = $sk;

@@ -37,7 +37,6 @@ $coursesJson = json_encode($allCourses, JSON_UNESCAPED_UNICODE);
 $scoreMap = ['A'=>95,'A-'=>90,'B+'=>85,'B'=>80,'B-'=>75,'C+'=>70,'C'=>65,'D'=>50,'E'=>0];
 $gradePoint = ['A'=>4.0,'A-'=>3.7,'B+'=>3.3,'B'=>3.0,'B-'=>2.7,'C+'=>2.3,'C'=>2.0,'D'=>1.0,'E'=>0.0];
 
-// ── Handle POST ──
 $message = null;
 $msgType = 'success';
 
@@ -66,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $saved++;
         }
         $message = "✅ $saved nilai berhasil disimpan.";
-        // Reload
+        
         $stmt = $db->prepare("SELECT * FROM student_courses WHERE student_id = ?");
         $stmt->execute([$studentId]);
         $studentCourses = [];
@@ -108,7 +107,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// ── Riwayat final ──
 $stmt = $db->prepare("
     SELECT sc.*, c.course_code, c.course_name, c.semester, c.credits
     FROM student_courses sc
@@ -119,7 +117,6 @@ $stmt = $db->prepare("
 $stmt->execute([$studentId]);
 $historyCourses = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// ── Hitung IPK sementara ──
 $totalWeight = 0; $totalCredit = 0;
 foreach ($historyCourses as $h) {
     $gp  = $gradePoint[strtoupper($h['grade'])] ?? 0;
@@ -130,11 +127,9 @@ foreach ($historyCourses as $h) {
 $calculatedIpk = $totalCredit > 0 ? round($totalWeight / $totalCredit, 2) : 0;
 $ipk = ($profile['ipk'] ?? 0) > 0 ? $profile['ipk'] : $calculatedIpk;
 
-// Kelompokkan per semester
 $bySemester = [];
 foreach ($semesterCourses as $c) $bySemester[$c['semester']][] = $c;
 
-// Matkul ekstra (luar kurikulum aktif)
 $semIds = array_column($semesterCourses, 'id');
 $extras = array_filter($historyCourses, fn($h) => !in_array($h['course_id'], $semIds));
 
@@ -146,7 +141,7 @@ function gradeClass(string $g): string {
     return 'gr-d';
 }
 
-$activePage = 'input_nilai'; // tetap highlight menu skill_gap
+$activePage = 'input_nilai'; 
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -154,7 +149,7 @@ $activePage = 'input_nilai'; // tetap highlight menu skill_gap
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <title>Input Nilai — CALMS</title>
-    <!-- SAMA dengan halaman lain -->
+    
     <link rel="stylesheet" href="../../styles/style.css">
     <link rel="stylesheet" href="../../styles/dashboard.css">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -223,7 +218,6 @@ $activePage = 'input_nilai'; // tetap highlight menu skill_gap
         }
         .btn-save-ipk:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(34,211,238,.3); }
 
-        /* ══ Tabs ══ */
         .tab-strip {
             display: flex;
             gap: 3px;
@@ -253,7 +247,6 @@ $activePage = 'input_nilai'; // tetap highlight menu skill_gap
         .tab-pane.active { display: block; }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* ══ Semester block ══ */
         .sem-block { margin-bottom: 24px; }
         .sem-label {
             display: inline-flex;
@@ -274,7 +267,6 @@ $activePage = 'input_nilai'; // tetap highlight menu skill_gap
             background: var(--border);
         }
 
-        /* ══ Course row ══ */
         .course-row {
             display: grid;
             grid-template-columns: 90px 1fr 80px;
@@ -321,7 +313,6 @@ $activePage = 'input_nilai'; // tetap highlight menu skill_gap
         .grade-select.gr-c { border-color: rgba(245,158,11,.35); color: #f59e0b; background: rgba(245,158,11,.04); }
         .grade-select.gr-d { border-color: rgba(239,68,68,.35); color: #ef4444; background: rgba(239,68,68,.04); }
 
-        /* ══ Sticky save bar ══ */
         .save-bar {
             position: sticky;
             bottom: 16px;
@@ -368,7 +359,6 @@ $activePage = 'input_nilai'; // tetap highlight menu skill_gap
         }
         .input-nilai-btn-ghost:hover { border-color: rgba(255,255,255,.2); color: var(--text-primary); }
 
-        /* ══ Extra course form ══ */
         .extra-form-card {
             background: var(--bg-card);
             border: 1px solid var(--border);
@@ -451,7 +441,6 @@ $activePage = 'input_nilai'; // tetap highlight menu skill_gap
         }
         .btn-del:hover { background: rgba(239,68,68,.18); }
 
-        /* ══ History table ══ */
         .hist-table { width: 100%; border-collapse: collapse; font-size: 13px; }
         .hist-table th {
             text-align: left;
@@ -467,14 +456,12 @@ $activePage = 'input_nilai'; // tetap highlight menu skill_gap
         .hist-table tr:last-child td { border-bottom: none; }
         .hist-table tr:hover td { background: rgba(255,255,255,.02); }
 
-        /* ══ Grade pills ══ */
         .gp { font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 999px; }
         .gr-a { background: rgba(16,185,129,.15); color: #10b981; }
         .gr-b { background: rgba(34,211,238,.12); color: var(--cyan); }
         .gr-c { background: rgba(245,158,11,.12); color: #f59e0b; }
         .gr-d { background: rgba(239,68,68,.12); color: #ef4444; }
 
-        /* ══ Alerts ══ */
         .alert {
             padding: 11px 16px;
             border-radius: 10px;
@@ -485,10 +472,8 @@ $activePage = 'input_nilai'; // tetap highlight menu skill_gap
         .alert-success { background: rgba(16,185,129,.08); border: 1px solid rgba(16,185,129,.25); color: #10b981; }
         .alert-warning { background: rgba(245,158,11,.08); border: 1px solid rgba(245,158,11,.25); color: #f59e0b; }
 
-        /* ══ Empty ══ */
         .empty-state { text-align: center; padding: 36px 20px; color: var(--text-muted); font-size: 13px; }
 
-        /* ══ Section card ══ */
         .section-card {
             background: var(--bg-card);
             border: 1px solid var(--border);
@@ -524,7 +509,6 @@ $activePage = 'input_nilai'; // tetap highlight menu skill_gap
 
 <main class="main-content">
 
-    <!-- Topbar — identik dengan halaman lain -->
     <div class="topbar">
         <div class="topbar-left">
             <button class="sidebar-toggle" id="sidebarToggle">
@@ -543,14 +527,12 @@ $activePage = 'input_nilai'; // tetap highlight menu skill_gap
         </div>
     </div>
 
-    <!-- Alert -->
     <?php if ($message): ?>
     <div class="alert alert-<?= $msgType ?>"><?= $message ?></div>
     <?php endif; ?>
 
-    <!-- ══ IPK BANNER ══ -->
     <div class="ipk-banner">
-        <!-- IPK besar -->
+     
         <div>
             <div class="ipk-big"><?= number_format($ipk, 2) ?></div>
             <div class="ipk-label">IPK<?= ($profile['ipk']??0)>0 ? ' (manual)' : ' (kalkulasi)' ?></div>
@@ -558,7 +540,6 @@ $activePage = 'input_nilai'; // tetap highlight menu skill_gap
 
         <div class="ipk-divider"></div>
 
-        <!-- Stat: matkul -->
         <div class="ipk-stat">
             <div class="ipk-stat-num" style="color:var(--cyan)"><?= count($historyCourses) ?></div>
             <div class="ipk-stat-lbl">Matkul Tercatat</div>
@@ -574,7 +555,6 @@ $activePage = 'input_nilai'; // tetap highlight menu skill_gap
 
         <div class="ipk-divider"></div>
 
-        <!-- Input IPK manual -->
         <div>
             <div style="font-size:11px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px">Update IPK Manual</div>
             <form method="POST">
@@ -594,16 +574,13 @@ $activePage = 'input_nilai'; // tetap highlight menu skill_gap
         </div>
     </div>
 
-    <!-- ══ TABS ══ -->
     <div class="tab-strip">
         <button class="tab-btn active" onclick="switchTab('kurikulum', this)">📋 Kurikulum Semester</button>
         <button class="tab-btn" onclick="switchTab('ekstra', this)">➕ Tambah Matkul</button>
         <button class="tab-btn" onclick="switchTab('riwayat', this)">📜 Riwayat & Hapus</button>
     </div>
 
-    <!-- ════════════════════════════
-         TAB 1: KURIKULUM
-    ════════════════════════════ -->
+    <!-- KURIKULUM -->
     <div class="tab-pane active" id="tab-kurikulum">
         <form method="POST" id="formKurikulum">
             <?php foreach ($bySemester as $sem => $courses): ?>
@@ -650,9 +627,7 @@ $activePage = 'input_nilai'; // tetap highlight menu skill_gap
         </form>
     </div>
 
-    <!-- ════════════════════════════
-         TAB 2: TAMBAH MATKUL EKSTRA
-    ════════════════════════════ -->
+    <!-- TAMBAH MATKUL EKSTRA -->
     <div class="tab-pane" id="tab-ekstra">
         <div class="extra-form-card">
             <div class="extra-form-title">
@@ -685,7 +660,7 @@ $activePage = 'input_nilai'; // tetap highlight menu skill_gap
             </form>
         </div>
 
-        <!-- Matkul ekstra yang sudah ditambahkan -->
+        <!-- matkul ekstra yang sudah ditambahkan -->
         <div class="section-card">
             <div class="section-card-title">
                 <div class="section-card-title-icon" style="background:rgba(34,211,238,.08)">📋</div>
@@ -715,9 +690,7 @@ $activePage = 'input_nilai'; // tetap highlight menu skill_gap
         </div>
     </div>
 
-    <!-- ════════════════════════════
-         TAB 3: RIWAYAT & HAPUS
-    ════════════════════════════ -->
+    <!-- RIWAYAT & HAPUS-->
     <div class="tab-pane" id="tab-riwayat">
         <div class="section-card">
             <div class="section-card-title">
@@ -772,11 +745,10 @@ $activePage = 'input_nilai'; // tetap highlight menu skill_gap
 </main>
 
 <script>
-// Sidebar
+
 document.getElementById('sidebarToggle')
     ?.addEventListener('click', () => document.getElementById('sidebar').classList.toggle('open'));
 
-// Tabs
 function switchTab(id, btn) {
     document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -784,7 +756,6 @@ function switchTab(id, btn) {
     btn.classList.add('active');
 }
 
-// Grade select styling — live feedback saat ganti nilai
 function onGradeChange(sel, courseId) {
     sel.className = 'grade-select';
     const row = document.getElementById('row-' + courseId);
@@ -800,7 +771,6 @@ function onGradeChange(sel, courseId) {
     }
 }
 
-// Reset semua pilihan
 function clearAll() {
     if (!confirm('Reset semua nilai yang belum disimpan?')) return;
     document.querySelectorAll('.grade-select').forEach(s => {
@@ -810,7 +780,6 @@ function clearAll() {
     document.querySelectorAll('.course-row').forEach(r => r.classList.remove('has-grade'));
 }
 
-// Autocomplete ekstra matkul
 const courses = <?= $coursesJson ?>;
 
 document.getElementById('extraSearch')?.addEventListener('input', function () {
