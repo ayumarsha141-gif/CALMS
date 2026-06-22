@@ -256,7 +256,7 @@ $activePage = 'admin_dashboard';
 
         <div class="dash-panel">
             <div class="panel-header">
-                <div><h2 class="panel-title">Mahasiswa Terbaru</h2><p class="panel-sub">5 akun mahasiswa yang baru mendaftar</p></div>
+                <div><h2 class="panel-title">Mahasiswa Terbaru</h2><p class="panel-sub"><?= count($recentStudents) ?> akun mahasiswa yang baru mendaftar</p></div>
                 <a href="admin_master.php?tab=career" class="panel-link">Semua →</a>
             </div>
             <?php if (!empty($recentStudents)): ?>
@@ -304,7 +304,7 @@ $activePage = 'admin_dashboard';
 
         <div class="dash-panel">
             <div class="panel-header">
-                <div><h2 class="panel-title">Simulasi Rekrutmen Terbaru</h2><p class="panel-sub">5 simulasi terakhir yang dijalankan</p></div>
+                <div><h2 class="panel-title">Simulasi Rekrutmen Terbaru</h2><p class="panel-sub"><?= count($recentSims) ?> simulasi terakhir yang dijalankan</p></div>
             </div>
             <?php if (!empty($recentSims)): ?>
             <table class="admin-table">

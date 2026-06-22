@@ -367,3 +367,11 @@ Memungkinkan admin mengelola data pengguna dan sistem.
 # 🎯 Project Goals
 
 CALMS bertujuan untuk membantu mahasiswa Informatika Universitas Mataram dalam memahami kebutuhan industri, mengidentifikasi kompetensi yang perlu ditingkatkan, serta menyusun strategi pengembangan karir yang lebih terarah. Sistem ini diharapkan dapat meningkatkan kesiapan kerja mahasiswa melalui pendekatan berbasis data, monitoring perkembangan kompetensi, dan rekomendasi pengembangan diri yang adaptif.
+
+##  Penggunaan AI dalam Kode 
+
+Kami menggunakan AI sebagai alat bantu dalam beberapa bagian pengembangan, di antaranya:
+
+- *Skill Gap Analysis (skill_gap.php)*: AI membantu menyusun query SQL untuk menghitung 
+  perbandingan level skill mahasiswa dengan standar industri, serta logika pengelompokan 
+  kategori gap (rendah/sedang/tinggi).
