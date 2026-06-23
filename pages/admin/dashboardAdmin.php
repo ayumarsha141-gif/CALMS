@@ -356,7 +356,7 @@ $activePage = 'admin_dashboard';
         <div class="dash-panel">
             <div class="panel-header">
                 <div><h2 class="panel-title">Industry Trends Terbaru</h2><p class="panel-sub">Tren teknologi terkini yang diinput ke sistem</p></div>
-                <a href="industry_insight.php" class="panel-link">Kelola →</a>
+                
             </div>
             <?php if (!empty($trends)): ?>
             <?php foreach ($trends as $tr): ?>
