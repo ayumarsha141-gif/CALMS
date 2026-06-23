@@ -16,9 +16,9 @@ CALMS merupakan platform digital yang dirancang untuk membantu mahasiswa Informa
 
 | Nama                         | NIM         | Module Responsibility      | Main Contributions                                                                                                                                                                                      |
 | ---------------------------- | ----------- | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Gusti Ayu Marsha Widyaswari  | F1D02410007 | Mahasiswa Module Developer | Mengembangkan fitur Dashboard Mahasiswa, Skill Gap Analysis, Career Roadmap, Recruitment Simulation, Laboratory Recommendation, Industry Insight, Certification Recommendation, dan Profile Management. |
-| Winona Andien Jihan Habbibah | F1D02410027 | Dosen Module Developer     | Mengembangkan fitur Dashboard Dosen, Student Monitoring, Skill Report Review, Laboratory Review, dan Recruitment Simulation Report.                                                                     |
-| Nadin Mufida                 | F1D02410128 | Admin & System Developer   | Mengembangkan Authentication System, Session Management, Dashboard Admin, User Management, Database Management, dan konfigurasi sistem.                                                                 |
+| Gusti Ayu Marsha Widyaswari  | F1D02410007 | Mahasiswa Module Developer | Fullstack, Mengembangkan fitur Dashboard Mahasiswa, Skill Gap Analysis, Career Roadmap, Recruitment Simulation, Laboratory Recommendation, Industry Insight, Certification Recommendation, dan Profile Management. |
+| Winona Andien Jihan Habbibah | F1D02410027 | Dosen Module Developer     | Fullstack, Mengembangkan fitur Dashboard Dosen, Student Monitoring, Skill Report Review, Laboratory Review, dan Recruitment Simulation Report.                                                                     |
+| Nadin Mufida                 | F1D02410128 | Admin & System Developer   | Fullstack, Mengembangkan Authentication System, Session Management, Dashboard Admin, User Management, Database Management, dan konfigurasi sistem.                                                                 |
 
 ---
 

@@ -15,7 +15,7 @@ $totalSimulations = $stmt->fetchColumn();
 
 $stmt = $db->query("SELECT AVG(probability_score) FROM simulations");
 $avgProb = round(($stmt->fetchColumn() ?? 0) * 100);
-
+//perhitungan rata-rata
 $stmt = $db->query("
     SELECT AVG(s.industry_level - ss.student_level) AS avg_gap
     FROM student_skills ss JOIN skills s ON s.id = ss.skill_id

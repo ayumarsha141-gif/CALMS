@@ -136,9 +136,9 @@ $descMap = [
     <style>
 
         .sg-stats {
-            display: block;
+            display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 0;
+            gap: 14px;
             margin-bottom: 28px;
         }
         .sg-stat {
