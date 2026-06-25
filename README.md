@@ -375,3 +375,38 @@ Kami menggunakan AI sebagai alat bantu dalam beberapa bagian pengembangan, di an
 - *Skill Gap Analysis (skill_gap.php)*: AI membantu menyusun query SQL untuk menghitung 
   perbandingan level skill mahasiswa dengan standar industri, serta logika pengelompokan 
   kategori gap (rendah/sedang/tinggi).
+
+  ---
+
+# 🖼️ Website Preview
+
+Berikut beberapa tampilan utama dari website **CALMS (Career Adaptive Learning Management System)**.
+
+<table>
+<tr>
+<td align="center">
+<b>Landing Page</b><br><br>
+<img src="screenshots/landing-page.png" width="350">
+</td>
+
+<td align="center">
+<b>Laboratory Recommendation</b><br><br>
+<img src="screenshots/lab-recommendation.png" width="350">
+</td>
+</tr>
+
+<tr>
+<td colspan="2" align="center">
+<b>Student Monitoring Dashboard</b><br><br>
+<img src="screenshots/student-monitoring.png" width="500">
+</td>
+</tr>
+</table>
+
+### Preview Description
+
+- **Landing Page** — Halaman utama yang memperkenalkan CALMS beserta fitur utama seperti Career Roadmap, Recruitment Simulation, dan Laboratory Recommendation.
+- **Laboratory Recommendation** — Menampilkan rekomendasi laboratorium tugas akhir berdasarkan profil kompetensi dan nilai mata kuliah mahasiswa.
+- **Student Monitoring Dashboard** — Dashboard dosen untuk memantau perkembangan mahasiswa, tingkat readiness, IPK, target karir, dan data skill.
+
+---
